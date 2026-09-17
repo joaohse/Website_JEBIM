@@ -91,43 +91,101 @@ def logout():
 # TELA DE LOGIN
 # -------------------------------------------------------------
 if not st.session_state["usuario_logado"]:
-    # 1. Header com Logo Transparente e Adaptado ao Tema Escuro
-    col_logo, col_vazia = st.columns([1, 4])
+    # Codificação do vídeo e da logo em Base64
+    b64_video = ""
+    try:
+        with open("124333-730771399_medium.mp4", "rb") as vf:
+            b64_video = base64.b64encode(vf.read()).decode()
+    except Exception:
+        pass
+
+    b64_logo = ""
+    try:
+        with open("logo.png", "rb") as lf:
+            b64_logo = base64.b64encode(lf.read()).decode()
+    except Exception:
+        pass
+
+    # Injeção de CSS para Vídeo Fullscreen e Glassmorphism
+    st.markdown(
+        f"""
+        <style>
+            /* Remove fundos padrões do Streamlit */
+            header[data-testid="stHeader"] {{
+                background: transparent !important;
+                z-index: 100;
+            }}
+            .stApp {{
+                background: transparent !important;
+            }}
+            /* Camada de Vídeo em Tela Cheia */
+            .bg-video-container {{
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                overflow: hidden;
+                z-index: -2;
+            }}
+            .bg-video {{
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }}
+            /* Overlay escuro para contraste */
+            .bg-overlay {{
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(11, 17, 32, 0.78);
+                backdrop-filter: blur(4px);
+                z-index: -1;
+            }}
+            /* Card do formulário estilo vidro escuro */
+            div[data-testid="stForm"] {{
+                background: rgba(15, 23, 42, 0.75) !important;
+                border: 1px solid rgba(255, 255, 255, 0.12) !important;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5) !important;
+                border-radius: 14px !important;
+            }}
+        </style>
+        
+        <div class="bg-video-container">
+            <video class="bg-video" autoplay loop muted playsinline>
+                <source src="data:video/mp4;base64,{b64_video}" type="video/mp4">
+            </video>
+        </div>
+        <div class="bg-overlay"></div>
+        """,
+        unsafe_allow_html=True
+    )
+
+    # Header / Logo
+    col_logo, _ = st.columns([1, 4])
     with col_logo:
-        try:
-            with open("logo.png", "rb") as f:
-                b64 = base64.b64encode(f.read()).decode()
+        if b64_logo:
             st.markdown(
                 f"""
-                <div style="
-                    margin-top: 10px;
-                    margin-left: 10px;
-                    width: 140px;
-                    background: transparent;
-                ">
-                    <img src="data:image/png;base64,{b64}" style="
-                        width: 100%; 
-                        height: auto; 
-                        display: block;
-                        filter: invert(1) brightness(1.2);
-                    ">
+                <div style="margin-top: 10px; margin-left: 10px; width: 140px;">
+                    <img src="data:image/png;base64,{b64_logo}" style="width: 100%; height: auto; display: block; filter: invert(1) brightness(1.2);">
                 </div>
                 """,
                 unsafe_allow_html=True
             )
-        except Exception:
-            pass
 
-    # 2. Título Central e Subtítulo
+    # Título Principal e Subtítulo
     st.markdown("""
-        <div style="text-align: center; margin-top: 40px; margin-bottom: 30px;">
-            <h1 style="font-size: 2.3rem; font-weight: 800; letter-spacing: 0.05em; margin-bottom: 4px;">PORTAL BIM INSIGHT</h1>
-            <p style="color: #94a3b8; font-size: 1.1rem; margin-top: 0px;">Acompanhamento Estratégico</p>
+        <div style="text-align: center; margin-top: 35px; margin-bottom: 25px;">
+            <h1 style="font-size: 2.3rem; font-weight: 800; letter-spacing: 0.05em; margin-bottom: 4px; color: #ffffff; text-shadow: 0 2px 10px rgba(0,0,0,0.6);">PORTAL BIM INSIGHT</h1>
+            <p style="color: #cbd5e1; font-size: 1.1rem; margin-top: 0px; text-shadow: 0 2px 6px rgba(0,0,0,0.6);">Acompanhamento Estratégico</p>
         </div>
     """, unsafe_allow_html=True)
-    
-    # 3. Card de Login
-    c1, c2, c3 = st.columns([1, 1.2, 1])
+
+    # Card de Login Centralizado
+    c1, c2, c3 = st.columns([1, 1.15, 1])
     with c2:
         with st.form("form_login"):
             usuario = st.text_input("Código de Acesso / Usuário")
