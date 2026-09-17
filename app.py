@@ -91,7 +91,7 @@ def logout():
 # TELA DE LOGIN
 # -------------------------------------------------------------
 if not st.session_state["usuario_logado"]:
-    # Logotipo fixo no canto superior esquerdo (~2cm / 80px)
+    # Logotipo fixo no canto superior esquerdo (~2cm / 75px)
     try:
         st.markdown(
             """
@@ -103,7 +103,7 @@ if not st.session_state["usuario_logado"]:
                     z-index: 999;
                 }
                 .logo-topo img {
-                    width: 80px;
+                    width: 75px;
                     height: auto;
                     border-radius: 4px;
                 }
@@ -111,7 +111,7 @@ if not st.session_state["usuario_logado"]:
             """,
             unsafe_allow_html=True
         )
-        with open("logo.jpg", "rb") as img_file:
+        with open("logo 23 min.jpg", "rb") as img_file:
             b64_logo = base64.b64encode(img_file.read()).decode()
             st.markdown(
                 f'<div class="logo-topo"><img src="data:image/jpeg;base64,{b64_logo}"></div>',
