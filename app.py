@@ -16,7 +16,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Estilização CSS inspirada no mockup executivo
+# Estilização CSS inspirada no layout executivo
 st.markdown("""
 <style>
     /* Fundo geral da aplicação */
@@ -147,18 +147,6 @@ st.markdown("""
     .step-status {
         font-size: 0.68rem;
         color: #64748b;
-    }
-    
-    /* Seção de Documentos */
-    .doc-row {
-        background: #0a1322;
-        border: 1px solid #162234;
-        border-radius: 8px;
-        padding: 14px 18px;
-        margin-bottom: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -346,7 +334,7 @@ if st.session_state["tipo_usuario"] == "admin":
                 ciclo_txt = c1.text_input("Identificação do Ciclo", value="Ciclo 1 - Start")
                 data_av = c2.date_input("Data do Ciclo", value=datetime.today())
                 
-                st.caption("Pontuações da Matriz Succar (0 = Inicial a 40 = Otimizado)")
+                st.caption("Pontuações da Matriz Succar (0 = Inicial a 40 = Otimizado)")[cite: 1]
                 col_a, col_b, col_c = st.columns(3)
                 with col_a:
                     st.markdown("**Tecnologia & Estratégia**")
@@ -373,11 +361,11 @@ if st.session_state["tipo_usuario"] == "admin":
                     pontos = [p_soft, p_hard, p_est, p_proc, p_pess, p_gest, p_cont, p_prod, p_proj]
                     media = sum(pontos) / len(pontos)
                     
-                    nivel = "Ad-Hoc / Inicial"
-                    if media >= 35: nivel = "Otimizado"
-                    elif media >= 25: nivel = "Integrado"
-                    elif media >= 15: nivel = "Gerenciado"
-                    elif media >= 5: nivel = "Definido"
+                    nivel = "Ad-Hoc / Inicial"[cite: 1]
+                    if media >= 35: nivel = "Otimizado"[cite: 1]
+                    elif media >= 25: nivel = "Integrado"[cite: 1]
+                    elif media >= 15: nivel = "Gerenciado"[cite: 1]
+                    elif media >= 5: nivel = "Definido"[cite: 1]
 
                     nova_av = {
                         "ciclo": ciclo_txt,
@@ -491,7 +479,6 @@ st.markdown(f"""
 # -------------------------------------------------------------
 if menu_selecionado == "Visão Geral":
     
-    # Tratamento para valores zerados ou em avaliação
     tem_avaliacao = len(avaliacoes) > 0
     ult_av = avaliacoes[-1] if tem_avaliacao else {}
     
@@ -503,7 +490,7 @@ if menu_selecionado == "Visão Geral":
     except Exception:
         data_atual_exib = data_atual_fmt
     
-    # Se a nota for 0.0, exibe "Em avaliação"
+    # Tratamento para ausência de nota ou nota 0
     if score_val == 0.0 or not tem_avaliacao:
         kpi_maturidade_txt = "Em avaliação"
         kpi_maturidade_sub = f"{ciclo_atual_nome} • {data_atual_exib}"
@@ -511,7 +498,7 @@ if menu_selecionado == "Visão Geral":
         kpi_maturidade_txt = f"{score_val} pts"
         kpi_maturidade_sub = f"Média ponderada • {ciclo_atual_nome}"
 
-    nivel_val = ult_av.get("nivel", "Ad-Hoc / Inicial")
+    nivel_val = ult_av.get("nivel", "Ad-Hoc / Inicial")[cite: 1]
     total_ciclos = len(avaliacoes)
 
     # 1. LINHA DE CARDS KPIS
@@ -565,7 +552,6 @@ if menu_selecionado == "Visão Geral":
             </div>
         """, unsafe_allow_html=True)
         
-        # Categorias de competência
         cats = ['Tecnologia', 'Processos', 'Pessoas', 'Gestão', 'Contratos', 'Produtos', 'Projetos', 'Estratégia']
         
         if tem_avaliacao:
@@ -589,21 +575,31 @@ if menu_selecionado == "Visão Geral":
             marker=dict(size=5, color='#38bdf8')
         ))
         
+        # Correção do layout polar sem parâmetros inválidos
         fig_r.update_layout(
+            template="plotly_dark",
             polar=dict(
                 bgcolor='rgba(10, 18, 32, 0.4)',
-                radialaxis=dict(visible=True, range=[0, 40], gridcolor='#1e293b', tickfont=dict(size=8, color='#64748b')),
-                angularaxis=dict(gridcolor='#1e293b', tickfont=dict(size=10, color='#94a3b8'))
+                radialaxis=dict(
+                    visible=True, 
+                    range=[0, 40], 
+                    gridcolor='#1e293b', 
+                    linecolor='#1e293b',
+                    tickfont=dict(size=8, color='#64748b')
+                ),
+                angularaxis=dict(
+                    gridcolor='#1e293b', 
+                    linecolor='#1e293b',
+                    tickfont=dict(size=10, color='#94a3b8')
+                )
             ),
             showlegend=False,
             height=280,
             margin=dict(l=35, r=35, t=20, b=20),
-            paper_bgcolor='transparent',
-            plot_bgcolor='transparent'
+            paper_bgcolor='rgba(0,0,0,0)'
         )
         st.plotly_chart(fig_r, use_container_width=True)
 
-        # Insights automáticos ou personalizados
         insights_lista = ult_av.get("insights", [
             "Destaque para a competência em Tecnologia, com melhor desempenho no ciclo atual.",
             "Oportunidade de estruturação nas competências de Pessoas e Gestão de Processos.",
@@ -627,20 +623,16 @@ if menu_selecionado == "Visão Geral":
             </div>
         """, unsafe_allow_html=True)
 
-        # Montagem dos ciclos reais vs planejados
         nomes_ciclos = ["Ciclo 1", "Ciclo 2", "Ciclo 3", "Ciclo 4"]
         valores_reais = [av.get("media_global", 0.0) for av in avaliacoes]
         
-        # Preenche com None para a linha não cair a zero em ciclos futuros
         while len(valores_reais) < 4:
             valores_reais.append(None)
 
-        # Linha de Referência / Meta estratégica
         valores_meta = [5.0, 15.0, 25.0, 35.0]
 
         fig_l = go.Figure()
         
-        # Meta recomendada (linha tracejada)
         fig_l.add_trace(go.Scatter(
             x=nomes_ciclos,
             y=valores_meta,
@@ -649,7 +641,6 @@ if menu_selecionado == "Visão Geral":
             line=dict(color='#475569', dash='dash', width=1.5)
         ))
         
-        # Curva real da empresa
         fig_l.add_trace(go.Scatter(
             x=nomes_ciclos,
             y=valores_reais,
@@ -660,17 +651,17 @@ if menu_selecionado == "Visão Geral":
         ))
 
         fig_l.update_layout(
+            template="plotly_dark",
             yaxis=dict(range=[0, 42], gridcolor='#172338', tickfont=dict(color='#64748b', size=9)),
             xaxis=dict(gridcolor='#172338', tickfont=dict(color='#94a3b8', size=10)),
             height=280,
             margin=dict(l=30, r=20, t=20, b=20),
-            paper_bgcolor='transparent',
-            plot_bgcolor='transparent',
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)',
             legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, font=dict(size=9, color='#94a3b8'))
         )
         st.plotly_chart(fig_l, use_container_width=True)
 
-        # Régua de Ciclos (Stepper)
         st.markdown("""
             <div class="stepper-container">
                 <div class="step-item">
@@ -715,7 +706,6 @@ if menu_selecionado == "Visão Geral":
         </div>
     """, unsafe_allow_html=True)
 
-    # Filtro por Categoria
     filtro_cat = st.radio(
         "Filtros de Categoria",
         ["Todos", "Relatórios", "Diagnósticos", "Planos", "Outros"],
@@ -753,11 +743,11 @@ if menu_selecionado == "Visão Geral":
             st.markdown("<div style='border-bottom: 1px solid #142033; margin-bottom: 8px;'></div>", unsafe_allow_html=True)
 
 # -------------------------------------------------------------
-# CONTEÚDO DAS DEMAIS SEÇÕES DO MENU LATERAL
+# DEMAIS MÓDULOS DO MENU LATERAL
 # -------------------------------------------------------------
 elif menu_selecionado == "Diagnóstico":
     st.subheader("Diagnóstico Estratégico")
-    st.write("Visão aprofundada dos eixos de Tecnologia, Processos e Políticas segundo o BIM Framework.")
+    st.write("Visão aprofundada dos eixos de Tecnologia, Processos e Políticas segundo o BIM Framework.")[cite: 1]
     st.info("Módulo detalhado em elaboração pelo consultor responsável.")
 
 elif menu_selecionado == "Análise SWOT":
