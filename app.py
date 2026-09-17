@@ -91,58 +91,42 @@ def logout():
 # TELA DE LOGIN
 # -------------------------------------------------------------
 if not st.session_state["usuario_logado"]:
-    # Header dedicado e logotipo calibrado para 140px
-    try:
-        with open("logo.png", "rb") as img_file:
-            b64_logo = base64.b64encode(img_file.read()).decode()
-            
-        st.markdown(
-            f"""
-            <style>
-                .custom-header {{
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 68px;
-                    background: transparent;
-                    display: flex;
-                    align-items: center;
-                    padding-left: 28px;
-                    padding-top: 22px;
-                    z-index: 9999;
-                }}
-                .custom-header img {{
-                    width: 140px;
-                    height: auto;
-                    object-fit: contain;
-                    display: block;
-                }}
-                .login-container {{
-                    margin-top: 100px;
-                    margin-bottom: 25px;
-                    text-align: center;
-                }}
-            </style>
-            <div class="custom-header">
-                <img src="data:image/png;base64,{b64_logo}" alt="Logo">
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-    except Exception:
-        st.markdown('<div style="height: 40px;"></div>', unsafe_allow_html=True)
+    # 1. Linha do Topo / Header (Logo alinhado à esquerda)
+    col_logo, col_vazia = st.columns([1, 4])
+    with col_logo:
+        try:
+            with open("logo.png", "rb") as f:
+                b64 = base64.b64encode(f.read()).decode()
+            st.markdown(
+                f"""
+                <div style="
+                    margin-top: 10px;
+                    margin-left: 10px;
+                    width: 155px;
+                    background: #ffffff;
+                    padding: 8px 12px;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                ">
+                    <img src="data:image/png;base64,{b64}" style="width: 100%; height: auto; display: block;">
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+        except Exception:
+            pass
 
-    # Título Principal e Subtítulo
+    # 2. Título Central e Subtítulo
     st.markdown("""
-        <div class="login-container">
-            <h1 style="font-size: 2.2rem; font-weight: 800; letter-spacing: 0.05em; margin-bottom: 0px;">PORTAL BIM INSIGHT</h1>
-            <p style="color: #94a3b8; font-size: 1.05rem; margin-top: 6px;">Acompanhamento Estratégico</p>
+        <div style="text-align: center; margin-top: 40px; margin-bottom: 30px;">
+            <h1 style="font-size: 2.3rem; font-weight: 800; letter-spacing: 0.05em; margin-bottom: 4px;">PORTAL BIM INSIGHT</h1>
+            <p style="color: #94a3b8; font-size: 1.1rem; margin-top: 0px;">Acompanhamento Estratégico</p>
         </div>
     """, unsafe_allow_html=True)
     
-    col1, col2, col3 = st.columns([1, 1.2, 1])
-    with col2:
+    # 3. Card de Login
+    c1, c2, c3 = st.columns([1, 1.2, 1])
+    with c2:
         with st.form("form_login"):
             usuario = st.text_input("Código de Acesso / Usuário")
             senha = st.text_input("Senha", type="password")
