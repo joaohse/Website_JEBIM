@@ -91,7 +91,7 @@ def logout():
 # TELA DE LOGIN
 # -------------------------------------------------------------
 if not st.session_state["usuario_logado"]:
-    # 1. Linha do Topo / Header (Logo alinhado à esquerda)
+    # 1. Header com Logo Transparente e Adaptado ao Tema Escuro
     col_logo, col_vazia = st.columns([1, 4])
     with col_logo:
         try:
@@ -102,13 +102,15 @@ if not st.session_state["usuario_logado"]:
                 <div style="
                     margin-top: 10px;
                     margin-left: 10px;
-                    width: 155px;
-                    background: #ffffff;
-                    padding: 8px 12px;
-                    border-radius: 8px;
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                    width: 140px;
+                    background: transparent;
                 ">
-                    <img src="data:image/png;base64,{b64}" style="width: 100%; height: auto; display: block;">
+                    <img src="data:image/png;base64,{b64}" style="
+                        width: 100%; 
+                        height: auto; 
+                        display: block;
+                        filter: invert(1) brightness(1.2);
+                    ">
                 </div>
                 """,
                 unsafe_allow_html=True
