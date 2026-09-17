@@ -334,7 +334,7 @@ if st.session_state["tipo_usuario"] == "admin":
                 ciclo_txt = c1.text_input("Identificação do Ciclo", value="Ciclo 1 - Start")
                 data_av = c2.date_input("Data do Ciclo", value=datetime.today())
                 
-                st.caption("Pontuações da Matriz Succar (0 = Inicial a 40 = Otimizado)")[cite: 1]
+                st.caption("Pontuações da Matriz Succar (0 = Inicial a 40 = Otimizado)")
                 col_a, col_b, col_c = st.columns(3)
                 with col_a:
                     st.markdown("**Tecnologia & Estratégia**")
@@ -361,11 +361,11 @@ if st.session_state["tipo_usuario"] == "admin":
                     pontos = [p_soft, p_hard, p_est, p_proc, p_pess, p_gest, p_cont, p_prod, p_proj]
                     media = sum(pontos) / len(pontos)
                     
-                    nivel = "Ad-Hoc / Inicial"[cite: 1]
-                    if media >= 35: nivel = "Otimizado"[cite: 1]
-                    elif media >= 25: nivel = "Integrado"[cite: 1]
-                    elif media >= 15: nivel = "Gerenciado"[cite: 1]
-                    elif media >= 5: nivel = "Definido"[cite: 1]
+                    nivel = "Ad-Hoc / Inicial"
+                    if media >= 35: nivel = "Otimizado"
+                    elif media >= 25: nivel = "Integrado"
+                    elif media >= 15: nivel = "Gerenciado"
+                    elif media >= 5: nivel = "Definido"
 
                     nova_av = {
                         "ciclo": ciclo_txt,
@@ -498,7 +498,7 @@ if menu_selecionado == "Visão Geral":
         kpi_maturidade_txt = f"{score_val} pts"
         kpi_maturidade_sub = f"Média ponderada • {ciclo_atual_nome}"
 
-    nivel_val = ult_av.get("nivel", "Ad-Hoc / Inicial")[cite: 1]
+    nivel_val = ult_av.get("nivel", "Ad-Hoc / Inicial")
     total_ciclos = len(avaliacoes)
 
     # 1. LINHA DE CARDS KPIS
@@ -575,7 +575,6 @@ if menu_selecionado == "Visão Geral":
             marker=dict(size=5, color='#38bdf8')
         ))
         
-        # Correção do layout polar sem parâmetros inválidos
         fig_r.update_layout(
             template="plotly_dark",
             polar=dict(
@@ -747,7 +746,7 @@ if menu_selecionado == "Visão Geral":
 # -------------------------------------------------------------
 elif menu_selecionado == "Diagnóstico":
     st.subheader("Diagnóstico Estratégico")
-    st.write("Visão aprofundada dos eixos de Tecnologia, Processos e Políticas segundo o BIM Framework.")[cite: 1]
+    st.write("Visão aprofundada dos eixos de Tecnologia, Processos e Políticas segundo o BIM Framework.")
     st.info("Módulo detalhado em elaboração pelo consultor responsável.")
 
 elif menu_selecionado == "Análise SWOT":
