@@ -91,38 +91,51 @@ def logout():
 # TELA DE LOGIN
 # -------------------------------------------------------------
 if not st.session_state["usuario_logado"]:
-    # Logotipo fixo no canto superior esquerdo (~2cm / 75px)
+    # Header dedicado e logotipo calibrado para 140px
     try:
+        with open("logo.png", "rb") as img_file:
+            b64_logo = base64.b64encode(img_file.read()).decode()
+            
         st.markdown(
-            """
+            f"""
             <style>
-                .logo-topo {
-                    position: absolute;
-                    top: 10px;
-                    left: 15px;
-                    z-index: 999;
-                }
-                .logo-topo img {
-                    width: 75px;
+                .custom-header {{
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 68px;
+                    background: transparent;
+                    display: flex;
+                    align-items: center;
+                    padding-left: 28px;
+                    padding-top: 22px;
+                    z-index: 9999;
+                }}
+                .custom-header img {{
+                    width: 140px;
                     height: auto;
-                    border-radius: 4px;
-                }
+                    object-fit: contain;
+                    display: block;
+                }}
+                .login-container {{
+                    margin-top: 100px;
+                    margin-bottom: 25px;
+                    text-align: center;
+                }}
             </style>
+            <div class="custom-header">
+                <img src="data:image/png;base64,{b64_logo}" alt="Logo">
+            </div>
             """,
             unsafe_allow_html=True
         )
-        with open("logo 23 min.jpg", "rb") as img_file:
-            b64_logo = base64.b64encode(img_file.read()).decode()
-            st.markdown(
-                f'<div class="logo-topo"><img src="data:image/jpeg;base64,{b64_logo}"></div>',
-                unsafe_allow_html=True
-            )
     except Exception:
-        pass
+        st.markdown('<div style="height: 40px;"></div>', unsafe_allow_html=True)
 
     # Título Principal e Subtítulo
     st.markdown("""
-        <div style="text-align: center; margin-top: 60px; margin-bottom: 25px;">
+        <div class="login-container">
             <h1 style="font-size: 2.2rem; font-weight: 800; letter-spacing: 0.05em; margin-bottom: 0px;">PORTAL BIM INSIGHT</h1>
             <p style="color: #94a3b8; font-size: 1.05rem; margin-top: 6px;">Acompanhamento Estratégico</p>
         </div>
