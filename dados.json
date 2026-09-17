@@ -1,3 +1,27 @@
 {
-  "empresas": {}
+  "empresas": {
+    "empresa_alfa": {
+      "nome": "Construtora Alfa",
+      "senha": "123",
+      "avaliacoes": [
+        {
+          "data": "2026-09-17",
+          "ciclo": "Ciclo 1 - Linha de Base",
+          "software": 20,
+          "hardware": 20,
+          "rede": 10,
+          "recursos": 15,
+          "fluxo": 20,
+          "produtos": 15,
+          "politicas": 10,
+          "estagio_modelagem": 20,
+          "estagio_colaboracao": 10,
+          "estagio_integracao": 0,
+          "media_global": 14.5,
+          "nivel": "Definido"
+        }
+      ],
+      "documentos": []
+    }
+  }
 }
