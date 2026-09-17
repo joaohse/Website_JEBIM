@@ -26,7 +26,24 @@
     "fz_arquitetura": {
       "nome": "FZ Arquitetura, Projeto e gerenciamento",
       "senha": "fzbim2026",
-      "avaliacoes": [],
+      "avaliacoes": [
+        {
+          "data": "2026-09-17",
+          "ciclo": "Ciclo 1 - Start",
+          "software": 10,
+          "hardware": 10,
+          "rede": 30,
+          "recursos": 0,
+          "fluxo": 0,
+          "produtos": 0,
+          "politicas": 0,
+          "estagio_modelagem": 0,
+          "estagio_colaboracao": 0,
+          "estagio_integracao": 0,
+          "media_global": 5.0,
+          "nivel": "Definido"
+        }
+      ],
       "documentos": []
     }
   }
