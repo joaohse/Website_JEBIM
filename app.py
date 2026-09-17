@@ -19,7 +19,6 @@ def get_base64_file(caminho):
             return ""
     return ""
 
-# Favicon da aba do navegador
 icone_favicon = "JE.png" if os.path.exists("JE.png") else "🔷"
 
 # -------------------------------------------------------------
@@ -101,7 +100,7 @@ def logout():
     st.rerun()
 
 # -------------------------------------------------------------
-# TELA DE LOGIN (COM VÍDEO SEGURO)
+# TELA DE LOGIN (BACKGROUND VÍDEO + GLASSMORPHISM)
 # -------------------------------------------------------------
 if not st.session_state["usuario_logado"]:
     # Codificação do vídeo e da logo em Base64
@@ -212,8 +211,9 @@ if not st.session_state["usuario_logado"]:
                 else:
                     st.error("Credenciais inválidas. Verifique o código e a senha.")
     st.stop()
+
 # -------------------------------------------------------------
-# CSS DO PORTAL INTERNO (SÓ EXECUTA APÓS O LOGIN)
+# CSS DO PORTAL INTERNO
 # -------------------------------------------------------------
 st.markdown("""
 <style>
@@ -312,6 +312,18 @@ st.markdown("""
     .step-status {
         font-size: 0.68rem;
         color: #64748b;
+    }
+    .swot-card {
+        background: #0a1322;
+        border: 1px solid #162438;
+        border-radius: 10px;
+        padding: 16px;
+        height: 100%;
+    }
+    .swot-title {
+        font-weight: 700;
+        font-size: 0.95rem;
+        margin-bottom: 8px;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -451,7 +463,7 @@ documentos = empresa_dados.get("documentos", [])
 
 b64_je_icon = get_base64_file("JE.png")
 
-# BARRA LATERAL COM LOGO JE
+# BARRA LATERAL SIMPLIFICADA (APENAS VISÃO GERAL E ENTREGÁVEIS)
 with st.sidebar:
     if b64_je_icon:
         icone_marca_html = f"""<img src="data:image/png;base64,{b64_je_icon}" style="width: 38px; height: 38px; object-fit: contain; border-radius: 4px; filter: brightness(1.2);">"""
@@ -470,16 +482,7 @@ with st.sidebar:
     
     menu_selecionado = st.radio(
         "Navegação",
-        [
-            "Visão Geral",
-            "Diagnóstico",
-            "Análise SWOT",
-            "Evolução BIM",
-            "Plano de Ação",
-            "Entregáveis",
-            "Documentos",
-            "Histórico"
-        ],
+        ["Visão Geral", "Entregáveis"],
         label_visibility="collapsed"
     )
     
@@ -502,7 +505,7 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # -------------------------------------------------------------
-# CONTEÚDO DA ABA: VISÃO GERAL
+# CONTEÚDO: VISÃO GERAL (DASHBOARD COMPLETO)
 # -------------------------------------------------------------
 if menu_selecionado == "Visão Geral":
     tem_avaliacao = len(avaliacoes) > 0
@@ -526,278 +529,7 @@ if menu_selecionado == "Visão Geral":
     nivel_val = ult_av.get("nivel", "Ad-Hoc / Inicial")
     total_ciclos = len(avaliacoes)
 
-    # 1. CARDS KPIS
+    # 1. LINHA DE CARDS KPIS
     c_kpi1, c_kpi2, c_kpi3, c_kpi4 = st.columns(4)
     with c_kpi1:
         st.markdown(f"""
-            <div class="metric-card">
-                <div class="metric-title">⏱️ Índice de Maturidade</div>
-                <div class="metric-value">{kpi_maturidade_txt}</div>
-                <div class="metric-sub">{kpi_maturidade_sub}</div>
-            </div>
-        """, unsafe_allow_html=True)
-        
-    with c_kpi2:
-        st.markdown(f"""
-            <div class="metric-card">
-                <div class="metric-title">📚 Nível de Maturidade</div>
-                <div class="metric-value">{nivel_val}</div>
-                <div class="metric-sub">Avaliação estratégica inicial</div>
-            </div>
-        """, unsafe_allow_html=True)
-
-    with c_kpi3:
-        st.markdown(f"""
-            <div class="metric-card">
-                <div class="metric-title">🔄 Ciclo Atual</div>
-                <div class="metric-value">{ciclo_atual_nome}</div>
-                <div class="metric-sub">Início da jornada de transformação</div>
-            </div>
-        """, unsafe_allow_html=True)
-
-    with c_kpi4:
-        st.markdown(f"""
-            <div class="metric-card">
-                <div class="metric-title">📋 Acompanhamento</div>
-                <div class="metric-value">{total_ciclos} {'ciclo' if total_ciclos == 1 else 'ciclos'}</div>
-                <div class="metric-sub">Ciclos de auditoria registrados</div>
-            </div>
-        """, unsafe_allow_html=True)
-
-    st.markdown("<div style='margin-top: 20px;'></div>", unsafe_allow_html=True)
-
-    # 2. GRÁFICOS EXECUTIVOS
-    col_radar, col_evol = st.columns([1, 1])
-
-    with col_radar:
-        st.markdown("""
-            <div class="chart-header">
-                <h3>Equilíbrio de Competências</h3>
-                <p>Radar de Competências e Capacidade BIM</p>
-            </div>
-        """, unsafe_allow_html=True)
-        
-        cats = ['Tecnologia', 'Processos', 'Pessoas', 'Gestão', 'Contratos', 'Produtos', 'Projetos', 'Estratégia']
-        
-        if tem_avaliacao:
-            val_atual = [
-                ult_av.get('software', 10), ult_av.get('processos', 10),
-                ult_av.get('pessoas', 10), ult_av.get('gestao', 10),
-                ult_av.get('contratos', 10), ult_av.get('produtos', 10),
-                ult_av.get('projetos', 10), ult_av.get('estrategia', 10)
-            ]
-        else:
-            val_atual = [10, 10, 10, 10, 10, 10, 10, 10]
-
-        fig_r = go.Figure()
-        fig_r.add_trace(go.Scatterpolar(
-            r=val_atual,
-            theta=cats,
-            fill='toself',
-            fillcolor='rgba(2, 132, 199, 0.25)',
-            name=ciclo_atual_nome,
-            line=dict(color='#0284c7', width=2),
-            marker=dict(size=5, color='#38bdf8')
-        ))
-        
-        fig_r.update_layout(
-            template="plotly_dark",
-            polar=dict(
-                bgcolor='rgba(10, 18, 32, 0.4)',
-                radialaxis=dict(
-                    visible=True, 
-                    range=[0, 40], 
-                    gridcolor='#1e293b', 
-                    linecolor='#1e293b',
-                    tickfont=dict(size=8, color='#64748b')
-                ),
-                angularaxis=dict(
-                    gridcolor='#1e293b', 
-                    linecolor='#1e293b',
-                    tickfont=dict(size=10, color='#94a3b8')
-                )
-            ),
-            showlegend=False,
-            height=280,
-            margin=dict(l=35, r=35, t=20, b=20),
-            paper_bgcolor='rgba(0,0,0,0)'
-        )
-        st.plotly_chart(fig_r, use_container_width=True)
-
-        insights_lista = ult_av.get("insights", [
-            "Destaque para a competência em Tecnologia, com melhor desempenho no ciclo atual.",
-            "Oportunidade de estruturação nas competências de Pessoas e Gestão de Processos.",
-            "Equilíbrio geral em fase de desenvolvimento, com espaço para consolidação contínua."
-        ])
-        
-        st.markdown(f"""
-            <div class="insight-box">
-                <div style="font-weight: 700; font-size: 0.85rem; color: #38bdf8; margin-bottom: 8px;">🎯 Principais Insights</div>
-                <div class="insight-item">• {insights_lista[0]}</div>
-                <div class="insight-item">• {insights_lista[1]}</div>
-                <div class="insight-item">• {insights_lista[2]}</div>
-            </div>
-        """, unsafe_allow_html=True)
-
-    with col_evol:
-        st.markdown("""
-            <div class="chart-header">
-                <h3>Evolução da Transformação BIM</h3>
-                <p>Acompanhamento progressivo dos ciclos de avaliação</p>
-            </div>
-        """, unsafe_allow_html=True)
-
-        nomes_ciclos = ["Ciclo 1", "Ciclo 2", "Ciclo 3", "Ciclo 4"]
-        valores_reais = [av.get("media_global", 0.0) for av in avaliacoes]
-        
-        while len(valores_reais) < 4:
-            valores_reais.append(None)
-
-        valores_meta = [5.0, 15.0, 25.0, 35.0]
-
-        fig_l = go.Figure()
-        fig_l.add_trace(go.Scatter(
-            x=nomes_ciclos,
-            y=valores_meta,
-            mode='lines',
-            name='Meta Estratégica',
-            line=dict(color='#475569', dash='dash', width=1.5)
-        ))
-        fig_l.add_trace(go.Scatter(
-            x=nomes_ciclos,
-            y=valores_reais,
-            mode='lines+markers',
-            name='Índice Medido',
-            line=dict(color='#0284c7', width=3),
-            marker=dict(size=8, color='#38bdf8', line=dict(color='#ffffff', width=1.5))
-        ))
-
-        fig_l.update_layout(
-            template="plotly_dark",
-            yaxis=dict(range=[0, 42], gridcolor='#172338', tickfont=dict(color='#64748b', size=9)),
-            xaxis=dict(gridcolor='#172338', tickfont=dict(color='#94a3b8', size=10)),
-            height=280,
-            margin=dict(l=30, r=20, t=20, b=20),
-            paper_bgcolor='rgba(0,0,0,0)',
-            plot_bgcolor='rgba(0,0,0,0)',
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, font=dict(size=9, color='#94a3b8'))
-        )
-        st.plotly_chart(fig_l, use_container_width=True)
-
-        st.markdown("""
-            <div class="stepper-container">
-                <div class="step-item">
-                    <div class="step-badge step-badge-active">1</div>
-                    <div class="step-name">Ciclo 1</div>
-                    <div class="step-status">Start</div>
-                </div>
-                <div style="flex: 1; height: 1px; background: #1e293b; margin-top: -12px;"></div>
-                <div class="step-item">
-                    <div class="step-badge step-badge-inactive">2</div>
-                    <div class="step-name">Ciclo 2</div>
-                    <div class="step-status">Em andamento</div>
-                </div>
-                <div style="flex: 1; height: 1px; background: #1e293b; margin-top: -12px;"></div>
-                <div class="step-item">
-                    <div class="step-badge step-badge-inactive">3</div>
-                    <div class="step-name">Ciclo 3</div>
-                    <div class="step-status">Planejado</div>
-                </div>
-                <div style="flex: 1; height: 1px; background: #1e293b; margin-top: -12px;"></div>
-                <div class="step-item">
-                    <div class="step-badge step-badge-inactive">4</div>
-                    <div class="step-name">Ciclo 4</div>
-                    <div class="step-status">Futuro</div>
-                </div>
-            </div>
-        """, unsafe_allow_html=True)
-
-    # 3. CENTRAL DE ENTREGÁVEIS
-    st.markdown("<div style='margin-top: 30px;'></div>", unsafe_allow_html=True)
-    total_docs = len(documentos)
-    st.markdown(f"""
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-            <div>
-                <h3 style="font-size: 1.15rem; font-weight: 700; color: #f8fafc; margin: 0;">📁 Central de Entregáveis</h3>
-                <p style="font-size: 0.82rem; color: #64748b; margin: 2px 0 0 0;">Documentos técnicos produzidos e homologados para sua organização</p>
-            </div>
-            <div style="font-size: 0.82rem; color: #94a3b8; background: #0e1726; padding: 6px 14px; border-radius: 20px; border: 1px solid #1e2d42;">
-                📄 <b>{total_docs}</b> {'documento disponível' if total_docs == 1 else 'documentos disponíveis'}
-            </div>
-        </div>
-    """, unsafe_allow_html=True)
-
-    filtro_cat = st.radio(
-        "Filtros de Categoria",
-        ["Todos", "Relatórios", "Diagnósticos", "Planos", "Outros"],
-        horizontal=True,
-        label_visibility="collapsed"
-    )
-
-    docs_filtrados = documentos
-    if filtro_cat != "Todos":
-        docs_filtrados = [d for d in documentos if d.get("categoria", "Relatórios") == filtro_cat]
-
-    if not docs_filtrados:
-        st.info("Nenhum documento disponível nesta categoria no momento.")
-    else:
-        for doc in docs_filtrados:
-            col_d1, col_d2 = st.columns([3.8, 1.2])
-            with col_d1:
-                st.markdown(f"""
-                    <div style="padding: 10px 0;">
-                        <div style="font-weight: 700; font-size: 0.95rem; color: #f1f5f9;">📄 {doc['titulo']}</div>
-                        <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 2px;">{doc.get('subtitulo', doc['nome_arquivo'])}</div>
-                        <div style="font-size: 0.72rem; color: #64748b; margin-top: 4px;">Disponibilizado em: {doc.get('data_envio', '-')}</div>
-                    </div>
-                """, unsafe_allow_html=True)
-            with col_d2:
-                st.write("")
-                bytes_bin = base64.b64decode(doc['conteudo_b64'])
-                st.download_button(
-                    label="⬇️ Baixar documento",
-                    data=bytes_bin,
-                    file_name=doc['nome_arquivo'],
-                    use_container_width=True,
-                    key=f"dl_{doc['titulo']}"
-                )
-            st.markdown("<div style='border-bottom: 1px solid #142033; margin-bottom: 8px;'></div>", unsafe_allow_html=True)
-
-elif menu_selecionado == "Diagnóstico":
-    st.subheader("Diagnóstico Estratégico")
-    st.write("Visão aprofundada dos eixos de Tecnologia, Processos e Políticas segundo o BIM Framework.")
-    st.info("Módulo detalhado em elaboração pelo consultor responsável.")
-
-elif menu_selecionado == "Análise SWOT":
-    st.subheader("Matriz SWOT da Transformação BIM")
-    st.write("Forças, Fraquezas, Oportunidades e Ameaças mapeadas no ambiente da organização.")
-    c_s1, c_s2 = st.columns(2)
-    with c_s1:
-        st.markdown("### 🟢 Forças (Strengths)")
-        st.caption("• Engajamento da liderança executiva na digitalização dos fluxos.")
-        st.markdown("### 🟡 Fraquezas (Weaknesses)")
-        st.caption("• Necessidade de padronização nos templates e famílias de modelagem.")
-    with c_s2:
-        st.markdown("### 🔵 Oportunidades (Opportunities)")
-        st.caption("• Diferenciação comercial perante clientes exigentes em BIM.")
-        st.markdown("### 🔴 Ameaças (Threats)")
-        st.caption("• Curva de aprendizado das equipes e interoperabilidade com projetistas parceiros.")
-
-elif menu_selecionado == "Evolução BIM":
-    st.subheader("Evolução Histórica & Metas")
-    st.write("Linha do tempo consolidada e projeção para os próximos ciclos de auditoria.")
-
-elif menu_selecionado == "Plano de Ação":
-    st.subheader("Plano de Ação & Roadmap de Implementação")
-    st.write("Acompanhamento das tarefas prioritárias, responsáveis e prazos estabelecidos.")
-
-elif menu_selecionado in ["Entregáveis", "Documentos"]:
-    st.subheader("Repositório Completo de Documentos")
-    st.write("Acesse os arquivos técnicos na aba **Visão Geral** ou navegue pelo repositório corporativo.")
-
-elif menu_selecionado == "Histórico":
-    st.subheader("Histórico de Registros")
-    if avaliacoes:
-        st.dataframe(pd.DataFrame(avaliacoes)[["ciclo", "data", "media_global", "nivel"]], use_container_width=True)
-    else:
-        st.info("Nenhum histórico disponível.")
