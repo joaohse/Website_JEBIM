@@ -91,10 +91,40 @@ def logout():
 # TELA DE LOGIN
 # -------------------------------------------------------------
 if not st.session_state["usuario_logado"]:
+    # Logotipo fixo no canto superior esquerdo (~2cm / 80px)
+    try:
+        st.markdown(
+            """
+            <style>
+                .logo-topo {
+                    position: absolute;
+                    top: 10px;
+                    left: 15px;
+                    z-index: 999;
+                }
+                .logo-topo img {
+                    width: 80px;
+                    height: auto;
+                    border-radius: 4px;
+                }
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
+        with open("logo.jpg", "rb") as img_file:
+            b64_logo = base64.b64encode(img_file.read()).decode()
+            st.markdown(
+                f'<div class="logo-topo"><img src="data:image/jpeg;base64,{b64_logo}"></div>',
+                unsafe_allow_html=True
+            )
+    except Exception:
+        pass
+
+    # Título Principal e Subtítulo
     st.markdown("""
-        <div style="text-align: center; margin-top: 50px;">
-            <h2>Portal de Maturidade BIM</h2>
-            <p style="color: #94a3b8;">Acompanhamento Estratégico & Evolução por Matriz Succar</p>
+        <div style="text-align: center; margin-top: 60px; margin-bottom: 25px;">
+            <h1 style="font-size: 2.2rem; font-weight: 800; letter-spacing: 0.05em; margin-bottom: 0px;">PORTAL BIM INSIGHT</h1>
+            <p style="color: #94a3b8; font-size: 1.05rem; margin-top: 6px;">Acompanhamento Estratégico</p>
         </div>
     """, unsafe_allow_html=True)
     
@@ -112,7 +142,6 @@ if not st.session_state["usuario_logado"]:
                 else:
                     st.error("Credenciais inválidas. Verifique o código e a senha.")
     st.stop()
-
 # -------------------------------------------------------------
 # BARRA LATERAL (MENU & PERFIL)
 # -------------------------------------------------------------
