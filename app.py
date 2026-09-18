@@ -102,6 +102,9 @@ def logout():
 # -------------------------------------------------------------
 # TELA DE LOGIN COM BACKGROUND EM VÍDEO
 # -------------------------------------------------------------
+# -------------------------------------------------------------
+# TELA DE LOGIN COM BACKGROUND EM VÍDEO
+# -------------------------------------------------------------
 if not st.session_state["usuario_logado"]:
     # Codificação do vídeo e da logo em Base64
     b64_video = ""
@@ -118,7 +121,7 @@ if not st.session_state["usuario_logado"]:
     except Exception:
         pass
 
-    # Injeção de CSS para Vídeo Fullscreen e Glassmorphism
+    # Injeção de CSS com a linha e bordas em tom cinza da paleta
     st.markdown(
         f"""
         <style>
@@ -156,12 +159,39 @@ if not st.session_state["usuario_logado"]:
                 backdrop-filter: blur(4px);
                 z-index: -1;
             }}
-            /* Card do formulário estilo vidro escuro */
+            
+            /* Card do formulário com borda e divisória cinza */
             div[data-testid="stForm"] {{
-                background: rgba(15, 23, 42, 0.75) !important;
-                border: 1px solid rgba(255, 255, 255, 0.12) !important;
+                background: rgba(15, 23, 42, 0.85) !important;
+                border: 1px solid #334155 !important; /* Borda cinza refinada */
                 box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5) !important;
                 border-radius: 14px !important;
+                padding: 24px !important;
+            }}
+
+            /* Linha separadora do rodapé do formulário em cinza */
+            div[data-testid="stForm"] > div:last-child {{
+                border-top: 1px solid #334155 !important;
+                padding-top: 16px !important;
+                margin-top: 8px !important;
+            }}
+
+            /* Labels dos inputs em cinza claro */
+            div[data-testid="stForm"] label p {{
+                color: #CBD5E1 !important;
+                font-weight: 600 !important;
+            }}
+
+            /* Campos de texto com contorno cinza */
+            div[data-testid="stForm"] input {{
+                background-color: rgba(255, 255, 255, 0.07) !important;
+                color: #F8F9FA !important;
+                border: 1px solid #475569 !important;
+                border-radius: 8px !important;
+            }}
+            div[data-testid="stForm"] input:focus {{
+                border-color: #94A3B8 !important;
+                box-shadow: 0 0 0 1px #94A3B8 !important;
             }}
         </style>
         
@@ -202,6 +232,10 @@ if not st.session_state["usuario_logado"]:
         with st.form("form_login"):
             usuario = st.text_input("Código de Acesso / Usuário")
             senha = st.text_input("Senha", type="password")
+            
+            # Linha divisória em cinza sutil antes do botão
+            st.markdown("<hr style='margin: 18px 0 14px 0; border: none; border-top: 1px solid #334155;'>", unsafe_allow_html=True)
+            
             btn_entrar = st.form_submit_button("Entrar no Portal", use_container_width=True)
             
             if btn_entrar:
