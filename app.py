@@ -189,7 +189,7 @@ if not st.session_state["usuario_logado"]:
 # -------------------------------------------------------------
 st.markdown("""
 <style>
-    /* 1. FUNDO GERAL E ÁREA DIREITA TOTALMENTE BRANCA */
+    /* 1. FUNDO GERAL E ÁREA DIREITA BRANCA */
     .stApp {
         background-color: #ffffff !important;
         color: #0f172a !important;
@@ -218,7 +218,6 @@ st.markdown("""
     div[data-testid="stRadio"] div[role="radiogroup"] {
         gap: 6px !important;
     }
-    /* Oculta qualquer círculo / input / svg do radio */
     div[data-testid="stRadio"] div[role="radiogroup"] label > div:first-child,
     div[data-testid="stRadio"] div[role="radiogroup"] label input[type="radio"],
     div[data-testid="stRadio"] svg {
@@ -228,7 +227,6 @@ st.markdown("""
         height: 0 !important;
         visibility: hidden !important;
     }
-    /* Transforma cada item num botão elegante e clicável */
     div[data-testid="stRadio"] div[role="radiogroup"] label {
         display: flex !important;
         align-items: center !important;
@@ -266,7 +264,7 @@ st.markdown("""
         font-weight: 700 !important;
     }
 
-    /* 4. CARDS, GRÁFICOS E ELEMENTOS ADAPTADOS PARA O FUNDO BRANCO */
+    /* 4. CARDS E ELEMENTOS ADAPTADOS PARA O FUNDO BRANCO */
     .metric-card {
         background: #ffffff;
         border: 1px solid #e2e8f0;
@@ -290,71 +288,6 @@ st.markdown("""
     .metric-sub {
         font-size: 0.75rem;
         color: #94a3b8;
-    }
-    .chart-header h3 {
-        font-size: 1.05rem;
-        font-weight: 700;
-        color: #0f172a;
-        margin: 0;
-    }
-    .chart-header p {
-        font-size: 0.8rem;
-        color: #64748b;
-        margin: 2px 0 10px 0;
-    }
-    .insight-box {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-left: 4px solid #0284c7;
-        border-radius: 8px;
-        padding: 14px;
-        margin-top: 10px;
-    }
-    .insight-item {
-        font-size: 0.83rem;
-        color: #334155;
-        margin-bottom: 8px;
-        line-height: 1.45;
-    }
-    .stepper-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 18px;
-        padding-top: 14px;
-        border-top: 1px solid #e2e8f0;
-    }
-    .step-item {
-        text-align: center;
-        flex: 1;
-    }
-    .step-badge {
-        width: 26px;
-        height: 26px;
-        border-radius: 50%;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.75rem;
-        font-weight: bold;
-        margin-bottom: 4px;
-    }
-    .step-badge-active {
-        background: #0284c7;
-        color: #ffffff;
-    }
-    .step-badge-inactive {
-        background: #e2e8f0;
-        color: #64748b;
-    }
-    .step-name {
-        font-size: 0.74rem;
-        font-weight: 700;
-        color: #1e293b;
-    }
-    .step-status {
-        font-size: 0.68rem;
-        color: #64748b;
     }
     .swot-card {
         background: #ffffff;
@@ -387,61 +320,66 @@ if st.session_state["tipo_usuario"] == "admin":
     if st.sidebar.button("Terminar Sessão", use_container_width=True):
         logout()
 
-    st.title("Painel de Gestão da Consultoria | Admin")
+    st.title("Painel de Gestão & Diagnóstico BIM (Admin)")
     tab_cad, tab_av, tab_doc, tab_del = st.tabs([
-        "➕ Registar Empresa", "📝 Registar Ciclo", "📁 Carregar Entregável", "🗑️ Eliminar Empresa"
+        "➕ Registar Empresa", "📝 Inserir Nova Avaliação", "📁 Upload de Documentos", "🗑️ Eliminar Empresa"
     ])
     
     with tab_cad:
-        st.subheader("Registar Nova Organização")
-        with st.form("form_cad_emp"):
-            id_e = st.text_input("ID único da empresa (ex: fz_arquitetura)").strip().lower()
-            nome_e = st.text_input("Nome Corporativo (ex: FZ Arquitetura, Projeto e Gerenciamento)")
-            senha_e = st.text_input("Palavra-passe de Acesso", type="password")
-            if st.form_submit_button("Guardar Organização"):
-                if id_e and nome_e and senha_e:
-                    DADOS.setdefault("empresas", {})[id_e] = {
-                        "nome": nome_e, "senha": senha_e, "avaliacoes": [], "documentos": []
+        st.subheader("Nova Empresa Cliente")
+        with st.form("form_nova_empresa"):
+            id_emp = st.text_input("ID único da Empresa (sem espaços, minúsculo)", placeholder="ex: fz_arquitetura")
+            nome_emp = st.text_input("Nome da Empresa", placeholder="ex: FZ Arquitetura, Projeto e Gerenciamento")
+            senha_emp = st.text_input("Senha de acesso do cliente", type="password")
+            if st.form_submit_button("Salvar Empresa"):
+                if id_emp and nome_emp and senha_emp:
+                    DADOS.setdefault("empresas", {})[id_emp] = {
+                        "nome": nome_emp, "senha": senha_emp, "avaliacoes": [], "documentos": []
                     }
                     if salvar_dados(DADOS, SHA_ATUAL):
-                        st.success("Empresa registada com sucesso!")
+                        st.success(f"Empresa '{nome_emp}' registrada com sucesso!")
                         st.rerun()
+                else:
+                    st.warning("Preencha todos os campos obrigatórios.")
 
     with tab_av:
-        st.subheader("Lançar Diagnóstico / Ciclo de Maturidade BIM")
+        st.subheader("Registrar Ciclo de Maturidade BIM")
         empresas_opts = list(DADOS.get("empresas", {}).keys())
-        if empresas_opts:
-            emp_sel = st.selectbox("Selecione a Organização", empresas_opts, format_func=lambda x: DADOS["empresas"][x]["nome"])
-            with st.form("form_reg_av"):
+        if not empresas_opts:
+            st.info("Cadastre uma empresa primeiro.")
+        else:
+            emp_sel = st.selectbox("Selecione a Empresa", empresas_opts, format_func=lambda x: DADOS["empresas"][x]["nome"])
+            with st.form("form_avaliacao"):
                 c1, c2 = st.columns(2)
-                ciclo_txt = c1.text_input("Identificação do Ciclo", value="Ciclo 1 - Start")
-                data_av = c2.date_input("Data do Ciclo", value=datetime.today())
+                ciclo_nome = c1.text_input("Identificação do Ciclo", value="Ciclo 1 - Start")
+                data_av = c2.date_input("Data da Avaliação", value=datetime.today())
                 
-                st.caption("Pontuações da Matriz Succar (0 = Inicial a 40 = Otimizado)")
-                col_a, col_b, col_c = st.columns(3)
-                with col_a:
-                    st.markdown("**Tecnologia & Estratégia**")
-                    p_soft = st.slider("Tecnologia / Software", 0, 40, 20, 10)
-                    p_hard = st.slider("Infraestrutura / Hardware", 0, 40, 20, 10)
-                    p_est = st.slider("Estratégia BIM", 0, 40, 10, 10)
-                with col_b:
-                    st.markdown("**Processos & Pessoas**")
-                    p_proc = st.slider("Processos / Fluxos", 0, 40, 15, 10)
-                    p_pess = st.slider("Pessoas / Competências", 0, 40, 10, 10)
-                    p_gest = st.slider("Gestão & Liderança", 0, 40, 10, 10)
-                with col_c:
-                    st.markdown("**Políticas & Contratos**")
-                    p_cont = st.slider("Contratos & Políticas", 0, 40, 10, 10)
-                    p_prod = st.slider("Produtos & Entregáveis", 0, 40, 15, 10)
-                    p_proj = st.slider("Projetos / Colaboração", 0, 40, 10, 10)
-
-                st.markdown("**Principais Insights Estratégicos (Apresentados ao Cliente)**")
-                insight_1 = st.text_input("Insight 1", value="Destaque para a competência em Tecnologia, com melhor desempenho no ciclo atual.")
-                insight_2 = st.text_input("Insight 2", value="Oportunidade de evolução nas competências de Pessoas e Gestão.")
-                insight_3 = st.text_input("Insight 3", value="Equilíbrio geral com espaço para estruturação progressiva em todas as áreas.")
-
-                if st.form_submit_button("Gravar Ciclo de Avaliação"):
-                    pontos = [p_soft, p_hard, p_est, p_proc, p_pess, p_gest, p_cont, p_prod, p_proj]
+                st.markdown("### Pontuação por Domínio (0 a 40 pts - Matriz Succar)")
+                st.caption("0: Ad-hoc | 10: Definido | 20: Gerenciado | 30: Integrado | 40: Otimizado")
+                
+                col_tec, col_proc, col_pol = st.columns(3)
+                with col_tec:
+                    st.markdown("**Tecnologia**")
+                    p_soft = st.slider("Software", 0, 40, 20, step=10)
+                    p_hard = st.slider("Hardware", 0, 40, 20, step=10)
+                    p_rede = st.slider("Rede / Infra", 0, 40, 10, step=10)
+                
+                with col_proc:
+                    st.markdown("**Processos**")
+                    p_rec = st.slider("Recursos & Pessoal", 0, 40, 20, step=10)
+                    p_flux = st.slider("Fluxo de Trabalho", 0, 40, 20, step=10)
+                    p_prod = st.slider("Produtos & Serviços", 0, 40, 15, step=10)
+                
+                with col_pol:
+                    st.markdown("**Políticas & Estágios**")
+                    p_pol = st.slider("Políticas & Contratos", 0, 40, 10, step=10)
+                    p_est1 = st.slider("Estágio 1 (Modelagem)", 0, 40, 20, step=10)
+                    p_est2 = st.slider("Estágio 2 (Colaboração)", 0, 40, 10, step=10)
+                    p_est3 = st.slider("Estágio 3 (Integração)", 0, 40, 0, step=10)
+                
+                btn_salvar_av = st.form_submit_button("Salvar Avaliação no Banco", use_container_width=True)
+                if btn_salvar_av:
+                    pontos = [p_soft, p_hard, p_rede, p_rec, p_flux, p_prod, p_pol, p_est1, p_est2, p_est3]
                     media = sum(pontos) / len(pontos)
                     
                     nivel = "Ad-Hoc / Inicial"
@@ -449,49 +387,58 @@ if st.session_state["tipo_usuario"] == "admin":
                     elif media >= 25: nivel = "Integrado"
                     elif media >= 15: nivel = "Gerenciado"
                     elif media >= 5: nivel = "Definido"
-
+                    
                     nova_av = {
-                        "ciclo": ciclo_txt,
                         "data": str(data_av),
-                        "software": p_soft, "hardware": p_hard, "estrategia": p_est,
-                        "processos": p_proc, "pessoas": p_pess, "gestao": p_gest,
-                        "contratos": p_cont, "produtos": p_prod, "projetos": p_proj,
+                        "ciclo": ciclo_nome,
+                        "software": p_soft,
+                        "hardware": p_hard,
+                        "rede": p_rede,
+                        "recursos": p_rec,
+                        "fluxo": p_flux,
+                        "produtos": p_prod,
+                        "politicas": p_pol,
+                        "estagio_modelagem": p_est1,
+                        "estagio_colaboracao": p_est2,
+                        "estagio_integracao": p_est3,
                         "media_global": round(media, 1),
-                        "nivel": nivel,
-                        "insights": [insight_1, insight_2, insight_3]
+                        "nivel": nivel
                     }
                     DADOS["empresas"][emp_sel]["avaliacoes"].append(nova_av)
                     if salvar_dados(DADOS, SHA_ATUAL):
-                        st.success("Ciclo registado com sucesso!")
+                        st.success("Avaliação gravada e sincronizada no GitHub com sucesso!")
                         st.rerun()
 
     with tab_doc:
-        st.subheader("Carregar Documento / Entregável para a Organização")
+        st.subheader("Subir Relatório ou Diretrizes para a Empresa")
         empresas_opts = list(DADOS.get("empresas", {}).keys())
         if empresas_opts:
-            emp_d = st.selectbox("Empresa Destinatária", empresas_opts, format_func=lambda x: DADOS["empresas"][x]["nome"], key="doc_emp")
+            emp_doc = st.selectbox("Selecione a Empresa Destinatária", empresas_opts, format_func=lambda x: DADOS["empresas"][x]["nome"], key="sel_emp_doc")
             categoria = st.selectbox("Tipo de Documento (ISO 19650)", [
                 "BIM Mandate", "BEP", "MIDP", "OIR", "AIR", "PIR", "EIR", "Geral"
             ])
-            t_doc = st.text_input("Título do Documento (Ex: Plano de Execução BIM - Revisão A)")
+            doc_nome = st.text_input("Título do Documento (Ex: Plano de Execução BIM - Revisão A)")
             s_doc = st.text_input("Subtítulo / Descrição (Ex: Versão preliminar para homologação)")
-            arq = st.file_uploader("Ficheiro", type=["pdf", "xlsx", "docx", "zip"])
+            arquivo = st.file_uploader("Selecione o arquivo (PDF, DWG, XLSX, ZIP)", type=["pdf", "xlsx", "docx", "zip"])
             
-            if st.button("Disponibilizar Entregável"):
-                if arq and t_doc:
-                    b64_arq = base64.b64encode(arq.read()).decode("utf-8")
-                    novo_d = {
+            if st.button("Enviar Arquivo"):
+                if arquivo and doc_nome:
+                    bytes_data = arquivo.read()
+                    base64_str = base64.b64encode(bytes_data).decode("utf-8")
+                    novo_doc = {
                         "categoria": categoria,
-                        "titulo": t_doc,
+                        "titulo": doc_nome,
                         "subtitulo": s_doc,
-                        "nome_arquivo": arq.name,
+                        "nome_arquivo": arquivo.name,
                         "data_envio": datetime.now().strftime("%d/%m/%Y %H:%M"),
-                        "conteudo_b64": b64_arq
+                        "conteudo_b64": base64_str
                     }
-                    DADOS["empresas"][emp_d].setdefault("documentos", []).append(novo_d)
+                    DADOS["empresas"][emp_doc].setdefault("documentos", []).append(novo_doc)
                     if salvar_dados(DADOS, SHA_ATUAL):
-                        st.success("Documento publicado com sucesso!")
+                        st.success(f"Documento '{arquivo.name}' disponibilizado para a empresa!")
                         st.rerun()
+                else:
+                    st.warning("Forneça o título e selecione um arquivo.")
 
     with tab_del:
         st.subheader("Eliminar Empresa")
@@ -655,308 +602,218 @@ def renderizar_modulo_documental(sigla, nome_completo, descricao, norma_ref, obj
 # CONTEÚDO: VISÃO GERAL (DASHBOARD)
 # -------------------------------------------------------------
 if menu_selecionado == "Visão Geral":
-    tem_avaliacao = len(avaliacoes) > 0
-    ult_av = avaliacoes[-1] if tem_avaliacao else {}
-    
-    score_val = ult_av.get("media_global", 0.0)
-    ciclo_atual_nome = ult_av.get("ciclo", "Ciclo 1")
-    data_atual_fmt = ult_av.get("data", datetime.today().strftime("%Y-%m-%d"))
-    try:
-        data_atual_exib = datetime.strptime(data_atual_fmt, "%Y-%m-%d").strftime("%d/%m/%Y")
-    except Exception:
-        data_atual_exib = data_atual_fmt
-    
-    if score_val == 0.0 or not tem_avaliacao:
-        kpi_maturidade_txt = "Em avaliação"
-        kpi_maturidade_sub = f"{ciclo_atual_nome} • {data_atual_exib}"
+    if not avaliacoes:
+        st.info("Nenhuma avaliação registrada até o momento. O consultor está preparando seus dados.")
     else:
-        kpi_maturidade_txt = f"{score_val} pts"
-        kpi_maturidade_sub = f"Média ponderada • {ciclo_atual_nome}"
-
-    nivel_val = ult_av.get("nivel", "Ad-Hoc / Inicial")
-    total_ciclos = len(avaliacoes)
-
-    # 1. CARDS KPIS
-    c_kpi1, c_kpi2, c_kpi3, c_kpi4 = st.columns(4)
-    with c_kpi1:
-        st.markdown(f"""
-            <div class="metric-card">
-                <div class="metric-title">⏱️ Índice de Maturidade</div>
-                <div class="metric-value">{kpi_maturidade_txt}</div>
-                <div class="metric-sub">{kpi_maturidade_sub}</div>
-            </div>
-        """, unsafe_allow_html=True)
+        ult_av = avaliacoes[-1]
         
-    with c_kpi2:
-        st.markdown(f"""
-            <div class="metric-card">
-                <div class="metric-title">📚 Nível de Maturidade</div>
-                <div class="metric-value">{nivel_val}</div>
-                <div class="metric-sub">Avaliação estratégica inicial</div>
-            </div>
-        """, unsafe_allow_html=True)
-
-    with c_kpi3:
-        st.markdown(f"""
-            <div class="metric-card">
-                <div class="metric-title">🔄 Ciclo Atual</div>
-                <div class="metric-value">{ciclo_atual_nome}</div>
-                <div class="metric-sub">Início da jornada de transformação</div>
-            </div>
-        """, unsafe_allow_html=True)
-
-    with c_kpi4:
-        txt_ciclos = 'ciclo' if total_ciclos == 1 else 'ciclos'
-        st.markdown(f"""
-            <div class="metric-card">
-                <div class="metric-title">📋 Acompanhamento</div>
-                <div class="metric-value">{total_ciclos} {txt_ciclos}</div>
-                <div class="metric-sub">Ciclos de auditoria registados</div>
-            </div>
-        """, unsafe_allow_html=True)
-
-    st.markdown("<div style='margin-top: 25px;'></div>", unsafe_allow_html=True)
-
-    # 2. GRÁFICOS (RADAR + EVOLUÇÃO) FORMATADOS PARA FUNDO CLARO
-    col_radar, col_evol = st.columns([1, 1])
-
-    with col_radar:
-        st.markdown("""
-            <div class="chart-header">
-                <h3>Equilíbrio de Competências</h3>
-                <p>Radar de Competências e Capacidade BIM</p>
-            </div>
-        """, unsafe_allow_html=True)
+        # 1. CARDS KPIS SUPERIORES
+        kpi1, kpi2, kpi3, kpi4 = st.columns(4)
+        with kpi1:
+            st.markdown(f"""
+                <div class="metric-card">
+                    <div class="metric-title">⏱️ Índice Médio Global</div>
+                    <div class="metric-value">{ult_av['media_global']} pts</div>
+                    <div class="metric-sub">/ 40 pts (Escala Succar)</div>
+                </div>
+            """, unsafe_allow_html=True)
+        with kpi2:
+            st.markdown(f"""
+                <div class="metric-card">
+                    <div class="metric-title">📚 Nível Predominante</div>
+                    <div class="metric-value">{ult_av['nivel']}</div>
+                    <div class="metric-sub">Estágio de Maturidade BIM</div>
+                </div>
+            """, unsafe_allow_html=True)
+        with kpi3:
+            st.markdown(f"""
+                <div class="metric-card">
+                    <div class="metric-title">🔄 Último Ciclo</div>
+                    <div class="metric-value">{ult_av['ciclo']}</div>
+                    <div class="metric-sub">Avaliação mais recente</div>
+                </div>
+            """, unsafe_allow_html=True)
+        with kpi4:
+            st.markdown(f"""
+                <div class="metric-card">
+                    <div class="metric-title">📋 Total de Revisões</div>
+                    <div class="metric-value">{len(avaliacoes)} ciclos</div>
+                    <div class="metric-sub">Histórico acumulado</div>
+                </div>
+            """, unsafe_allow_html=True)
+                
+        st.markdown("<div style='margin-top: 25px;'></div>", unsafe_allow_html=True)
         
-        cats = ['Tecnologia', 'Processos', 'Pessoas', 'Gestão', 'Contratos', 'Produtos', 'Projetos', 'Estratégia']
+        # 2. GRÁFICOS ANALÍTICOS ORIGINAIS (PLOTLY POWER BI STYLE)
+        g1, g2 = st.columns(2)
         
-        if tem_avaliacao:
-            val_atual = [
-                ult_av.get('software', 10), ult_av.get('processos', 10),
-                ult_av.get('pessoas', 10), ult_av.get('gestao', 10),
-                ult_av.get('contratos', 10), ult_av.get('produtos', 10),
-                ult_av.get('projetos', 10), ult_av.get('estrategia', 10)
+        with g1:
+            st.markdown("""
+                <div style="margin-bottom: 8px;">
+                    <h3 style="font-size: 1.15rem; font-weight: 700; color: #0f172a; margin: 0;">Equilíbrio de Competências (Radar)</h3>
+                </div>
+            """, unsafe_allow_html=True)
+            
+            categorias = ['Software', 'Hardware', 'Rede', 'Recursos', 'Fluxo', 'Produtos', 'Políticas']
+            valores_atuais = [
+                ult_av.get('software', 0), ult_av.get('hardware', 0), ult_av.get('rede', 0),
+                ult_av.get('recursos', 0), ult_av.get('fluxo', 0), ult_av.get('produtos', 0), ult_av.get('politicas', 0)
             ]
-        else:
-            val_atual = [10, 10, 10, 10, 10, 10, 10, 10]
+            
+            fig_radar = go.Figure()
+            fig_radar.add_trace(go.Scatterpolar(
+                r=valores_atuais,
+                theta=categorias,
+                fill='toself',
+                name=ult_av['ciclo'],
+                line_color='#0284c7'
+            ))
+            
+            # Se houver ciclo anterior, plota como linha comparativa tracejada
+            if len(avaliacoes) > 1:
+                penult_av = avaliacoes[-2]
+                valores_ant = [
+                    penult_av.get('software', 0), penult_av.get('hardware', 0), penult_av.get('rede', 0),
+                    penult_av.get('recursos', 0), penult_av.get('fluxo', 0), penult_av.get('produtos', 0), penult_av.get('politicas', 0)
+                ]
+                fig_radar.add_trace(go.Scatterpolar(
+                    r=valores_ant,
+                    theta=categorias,
+                    name=penult_av['ciclo'],
+                    line=dict(color='#94a3b8', dash='dash')
+                ))
+            
+            fig_radar.update_layout(
+                polar=dict(radialaxis=dict(visible=True, range=[0, 40])),
+                showlegend=True,
+                margin=dict(l=40, r=40, t=30, b=30),
+                height=350,
+                template="plotly_white"
+            )
+            st.plotly_chart(fig_radar, use_container_width=True)
+            
+        with g2:
+            st.markdown("""
+                <div style="margin-bottom: 8px;">
+                    <h3 style="font-size: 1.15rem; font-weight: 700; color: #0f172a; margin: 0;">Evolução Histórica da Maturidade</h3>
+                </div>
+            """, unsafe_allow_html=True)
+            
+            df_hist = pd.DataFrame(avaliacoes)
+            fig_line = go.Figure()
+            fig_line.add_trace(go.Scatter(
+                x=df_hist['ciclo'],
+                y=df_hist['media_global'],
+                mode='lines+markers+text',
+                text=[f"{v} pts" for v in df_hist['media_global']],
+                textposition="top center",
+                line=dict(color='#38bdf8', width=3),
+                marker=dict(size=8, color='#0284c7')
+            ))
+            fig_line.update_layout(
+                yaxis=dict(range=[0, 42], title="Pontuação Média"),
+                xaxis=dict(title="Ciclos de Auditoria"),
+                height=350,
+                margin=dict(l=40, r=40, t=30, b=30),
+                template="plotly_white"
+            )
+            st.plotly_chart(fig_line, use_container_width=True)
 
-        fig_r = go.Figure()
-        fig_r.add_trace(go.Scatterpolar(
-            r=val_atual,
-            theta=cats,
-            fill='toself',
-            fillcolor='rgba(2, 132, 199, 0.18)',
-            name=ciclo_atual_nome,
-            line=dict(color='#0284c7', width=2.5),
-            marker=dict(size=6, color='#0284c7')
-        ))
-        
-        fig_r.update_layout(
-            template="plotly_white",
-            polar=dict(
-                radialaxis=dict(
-                    visible=True, 
-                    range=[0, 40], 
-                    gridcolor='#e2e8f0', 
-                    linecolor='#cbd5e1',
-                    tickfont=dict(size=9, color='#64748b')
-                ),
-                angularaxis=dict(
-                    gridcolor='#e2e8f0', 
-                    linecolor='#cbd5e1',
-                    tickfont=dict(size=10, color='#334155', family="Arial, sans-serif")
-                )
-            ),
-            showlegend=False,
-            height=280,
-            margin=dict(l=35, r=35, t=20, b=20),
-            paper_bgcolor='rgba(0,0,0,0)'
-        )
-        st.plotly_chart(fig_r, use_container_width=True)
-
-        insights_lista = ult_av.get("insights", [
-            "Destaque para a competência em Tecnologia, com melhor desempenho no ciclo atual.",
-            "Oportunidade de estruturação nas competências de Pessoas e Gestão de Processos.",
-            "Equilíbrio geral em fase de desenvolvimento, com espaço para consolidação contínua."
-        ])
-        
-        st.markdown(f"""
-            <div class="insight-box">
-                <div style="font-weight: 700; font-size: 0.88rem; color: #0284c7; margin-bottom: 8px;">🎯 Principais Insights</div>
-                <div class="insight-item">• {insights_lista[0]}</div>
-                <div class="insight-item">• {insights_lista[1]}</div>
-                <div class="insight-item">• {insights_lista[2]}</div>
-            </div>
-        """, unsafe_allow_html=True)
-
-    with col_evol:
+        # 3. IDENTIDADE ESTRATÉGICA CORPORATIVA
+        st.markdown("<div style='margin-top: 35px;'></div>", unsafe_allow_html=True)
         st.markdown("""
-            <div class="chart-header">
-                <h3>Evolução da Transformação BIM</h3>
-                <p>Acompanhamento progressivo dos ciclos de avaliação</p>
+            <div style="margin-bottom: 14px;">
+                <h3 style="font-size: 1.15rem; font-weight: 700; color: #0f172a; margin: 0;">🎯 Identidade Estratégica Corporativa</h3>
+                <p style="font-size: 0.82rem; color: #64748b; margin: 2px 0 0 0;">Diretrizes fundamentais para orientar a transformação digital e os padrões de entrega</p>
             </div>
         """, unsafe_allow_html=True)
 
-        nomes_ciclos = ["Ciclo 1", "Ciclo 2", "Ciclo 3", "Ciclo 4"]
-        valores_reais = [av.get("media_global", 0.0) for av in avaliacoes]
-        
-        while len(valores_reais) < 4:
-            valores_reais.append(None)
+        col_m, col_v, col_val = st.columns(3)
+        with col_m:
+            st.markdown("""
+                <div class="metric-card" style="min-height: 240px; border-top: 4px solid #0284c7;">
+                    <div style="font-size: 1.2rem; margin-bottom: 8px;">🎯</div>
+                    <div style="font-weight: 700; font-size: 1.05rem; color: #0f172a; margin-bottom: 8px;">Missão</div>
+                    <div style="font-size: 0.86rem; color: #334155; line-height: 1.6;">
+                        Desenvolver projetos integrados e gestão técnica com excelência, transformando necessidades espaciais e operacionais em soluções arquitetónicas eficientes, sustentáveis e tecnologicamente sólidas.
+                    </div>
+                </div>
+            """, unsafe_allow_html=True)
 
-        valores_meta = [5.0, 15.0, 25.0, 35.0]
+        with col_v:
+            st.markdown("""
+                <div class="metric-card" style="min-height: 240px; border-top: 4px solid #0284c7;">
+                    <div style="font-size: 1.2rem; margin-bottom: 8px;">🔭</div>
+                    <div style="font-weight: 700; font-size: 1.05rem; color: #0f172a; margin-bottom: 8px;">Visão</div>
+                    <div style="font-size: 0.86rem; color: #334155; line-height: 1.6;">
+                        Consolidar-se como referência regional em maturidade digital e metodologia BIM, garantindo tomadas de decisão antecipadas, previsibilidade de custo/obra e entregáveis de alto padrão construtivo.
+                    </div>
+                </div>
+            """, unsafe_allow_html=True)
 
-        fig_l = go.Figure()
-        fig_l.add_trace(go.Scatter(
-            x=nomes_ciclos,
-            y=valores_meta,
-            mode='lines',
-            name='Meta Estratégica',
-            line=dict(color='#94a3b8', dash='dash', width=1.5)
-        ))
-        fig_l.add_trace(go.Scatter(
-            x=nomes_ciclos,
-            y=valores_reais,
-            mode='lines+markers',
-            name='Índice Medido',
-            line=dict(color='#0284c7', width=3),
-            marker=dict(size=8, color='#0284c7', line=dict(color='#ffffff', width=2))
-        ))
+        with col_val:
+            st.markdown("""
+                <div class="metric-card" style="min-height: 240px; border-top: 4px solid #10b981;">
+                    <div style="font-size: 1.2rem; margin-bottom: 8px;">💎</div>
+                    <div style="font-weight: 700; font-size: 1.05rem; color: #0f172a; margin-bottom: 8px;">Valores</div>
+                    <div style="font-size: 0.85rem; color: #334155; line-height: 1.6;">
+                        • <b>Rigor Técnico</b>: Modelação precisa e consistência na informação.<br>
+                        • <b>Colaboração Aberta</b>: Integração ativa com parceiros e clientes.<br>
+                        • <b>Inovação Contínua</b>: Adoção prática das melhores diretrizes BIM.<br>
+                        • <b>Sustentabilidade</b>: Redução de retrabalho pela pré-construção virtual.
+                    </div>
+                </div>
+            """, unsafe_allow_html=True)
 
-        fig_l.update_layout(
-            template="plotly_white",
-            yaxis=dict(range=[0, 42], gridcolor='#f1f5f9', tickfont=dict(color='#64748b', size=9)),
-            xaxis=dict(gridcolor='#f1f5f9', tickfont=dict(color='#334155', size=10)),
-            height=280,
-            margin=dict(l=30, r=20, t=20, b=20),
-            paper_bgcolor='rgba(0,0,0,0)',
-            plot_bgcolor='rgba(0,0,0,0)',
-            legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1, font=dict(size=9, color='#64748b'))
-        )
-        st.plotly_chart(fig_l, use_container_width=True)
-
+        # 4. ANÁLISE SWOT
+        st.markdown("<div style='margin-top: 35px;'></div>", unsafe_allow_html=True)
         st.markdown("""
-            <div class="stepper-container">
-                <div class="step-item">
-                    <div class="step-badge step-badge-active">1</div>
-                    <div class="step-name">Ciclo 1</div>
-                    <div class="step-status">Start</div>
-                </div>
-                <div style="flex: 1; height: 1px; background: #e2e8f0; margin-top: -12px;"></div>
-                <div class="step-item">
-                    <div class="step-badge step-badge-inactive">2</div>
-                    <div class="step-name">Ciclo 2</div>
-                    <div class="step-status">Em andamento</div>
-                </div>
-                <div style="flex: 1; height: 1px; background: #e2e8f0; margin-top: -12px;"></div>
-                <div class="step-item">
-                    <div class="step-badge step-badge-inactive">3</div>
-                    <div class="step-name">Ciclo 3</div>
-                    <div class="step-status">Planeado</div>
-                </div>
-                <div style="flex: 1; height: 1px; background: #e2e8f0; margin-top: -12px;"></div>
-                <div class="step-item">
-                    <div class="step-badge step-badge-inactive">4</div>
-                    <div class="step-name">Ciclo 4</div>
-                    <div class="step-status">Futuro</div>
-                </div>
+            <div style="margin-bottom: 14px;">
+                <h3 style="font-size: 1.15rem; font-weight: 700; color: #0f172a; margin: 0;">📊 Matriz SWOT da Transformação BIM</h3>
+                <p style="font-size: 0.82rem; color: #64748b; margin: 2px 0 0 0;">Mapeamento de forças internas e dinâmica externa de mercado</p>
             </div>
         """, unsafe_allow_html=True)
 
-    # 3. IDENTIDADE ESTRATÉGICA CORPORATIVA
-    st.markdown("<div style='margin-top: 35px;'></div>", unsafe_allow_html=True)
-    st.markdown("""
-        <div style="margin-bottom: 14px;">
-            <h3 style="font-size: 1.15rem; font-weight: 700; color: #0f172a; margin: 0;">🎯 Identidade Estratégica Corporativa</h3>
-            <p style="font-size: 0.82rem; color: #64748b; margin: 2px 0 0 0;">Diretrizes fundamentais para orientar a transformação digital e os padrões de entrega</p>
-        </div>
-    """, unsafe_allow_html=True)
+        c_swot1, c_swot2 = st.columns(2)
+        with c_swot1:
+            st.markdown("""
+                <div class="swot-card" style="border-left: 4px solid #10b981; margin-bottom: 12px;">
+                    <div class="swot-title" style="color: #059669;">🟢 Forças (Strengths)</div>
+                    <div style="font-size: 0.85rem; color: #334155; line-height: 1.55;">
+                        • Empenho da liderança na consolidação dos fluxos digitais.<br>
+                        • Reputação consolidada em arquitetura de alto padrão e detalhe executivo.<br>
+                        • Disponibilidade da equipa técnica para integrar novos softwares e rotinas BIM.
+                    </div>
+                </div>
+                <div class="swot-card" style="border-left: 4px solid #f59e0b;">
+                    <div class="swot-title" style="color: #d97706;">🟡 Fraquezas (Weaknesses)</div>
+                    <div style="font-size: 0.85rem; color: #334155; line-height: 1.55;">
+                        • Necessidade de padronização nas famílias e modelos paramétricos.<br>
+                        • Processos de deteção de colisões (Clash Detection) em fase inicial de estruturação.<br>
+                        • Documentação de processos (BEP interno) em consolidação.
+                    </div>
+                </div>
+            """, unsafe_allow_html=True)
 
-    col_m, col_v, col_val = st.columns(3)
-    with col_m:
-        st.markdown("""
-            <div class="metric-card" style="min-height: 240px; border-top: 4px solid #0284c7;">
-                <div style="font-size: 1.2rem; margin-bottom: 8px;">🎯</div>
-                <div style="font-weight: 700; font-size: 1.05rem; color: #0f172a; margin-bottom: 8px;">Missão</div>
-                <div style="font-size: 0.86rem; color: #334155; line-height: 1.6;">
-                    Desenvolver projetos integrados e gestão técnica com excelência, transformando necessidades espaciais e operacionais em soluções arquitetónicas eficientes, sustentáveis e tecnologicamente sólidas.
+        with c_swot2:
+            st.markdown("""
+                <div class="swot-card" style="border-left: 4px solid #0284c7; margin-bottom: 12px;">
+                    <div class="swot-title" style="color: #0284c7;">🔵 Oportunidades (Opportunities)</div>
+                    <div style="font-size: 0.85rem; color: #334155; line-height: 1.55;">
+                        • Posicionamento de destaque perante clientes e concursos que exigem BIM.<br>
+                        • Redução mensurável de retrabalho no estaleiro via coordenação 3D/4D.<br>
+                        • Oferta de serviços consultivos integrados e compatibilização avançada.
+                    </div>
                 </div>
-            </div>
-        """, unsafe_allow_html=True)
-
-    with col_v:
-        st.markdown("""
-            <div class="metric-card" style="min-height: 240px; border-top: 4px solid #0284c7;">
-                <div style="font-size: 1.2rem; margin-bottom: 8px;">🔭</div>
-                <div style="font-weight: 700; font-size: 1.05rem; color: #0f172a; margin-bottom: 8px;">Visão</div>
-                <div style="font-size: 0.86rem; color: #334155; line-height: 1.6;">
-                    Consolidar-se como referência regional em maturidade digital e metodologia BIM, garantindo tomadas de decisão antecipadas, previsibilidade de custo/obra e entregáveis de alto padrão construtivo.
+                <div class="swot-card" style="border-left: 4px solid #ef4444;">
+                    <div class="swot-title" style="color: #dc2626;">🔴 Ameaças (Threats)</div>
+                    <div style="font-size: 0.85rem; color: #334155; line-height: 1.55;">
+                        • Projetistas parceiros com práticas limitadas a CAD 2D tradicional.<br>
+                        • Prazos contratuais reduzidos que condicionam o tempo de arranque da modelação.<br>
+                        • Custos de atualização contínua de licenças e postos de trabalho de alto rendimento.
+                    </div>
                 </div>
-            </div>
-        """, unsafe_allow_html=True)
-
-    with col_val:
-        st.markdown("""
-            <div class="metric-card" style="min-height: 240px; border-top: 4px solid #10b981;">
-                <div style="font-size: 1.2rem; margin-bottom: 8px;">💎</div>
-                <div style="font-weight: 700; font-size: 1.05rem; color: #0f172a; margin-bottom: 8px;">Valores</div>
-                <div style="font-size: 0.85rem; color: #334155; line-height: 1.6;">
-                    • <b>Rigor Técnico</b>: Modelação precisa e consistência na informação.<br>
-                    • <b>Colaboração Aberta</b>: Integração ativa com parceiros e clientes.<br>
-                    • <b>Inovação Contínua</b>: Adoção prática das melhores diretrizes BIM.<br>
-                    • <b>Sustentabilidade</b>: Redução de retrabalho pela pré-construção virtual.
-                </div>
-            </div>
-        """, unsafe_allow_html=True)
-
-    # 4. ANÁLISE SWOT
-    st.markdown("<div style='margin-top: 35px;'></div>", unsafe_allow_html=True)
-    st.markdown("""
-        <div style="margin-bottom: 14px;">
-            <h3 style="font-size: 1.15rem; font-weight: 700; color: #0f172a; margin: 0;">📊 Matriz SWOT da Transformação BIM</h3>
-            <p style="font-size: 0.82rem; color: #64748b; margin: 2px 0 0 0;">Mapeamento de forças internas e dinâmica externa de mercado</p>
-        </div>
-    """, unsafe_allow_html=True)
-
-    c_swot1, c_swot2 = st.columns(2)
-    with c_swot1:
-        st.markdown("""
-            <div class="swot-card" style="border-left: 4px solid #10b981; margin-bottom: 12px;">
-                <div class="swot-title" style="color: #059669;">🟢 Forças (Strengths)</div>
-                <div style="font-size: 0.85rem; color: #334155; line-height: 1.55;">
-                    • Empenho da liderança na consolidação dos fluxos digitais.<br>
-                    • Reputação consolidada em arquitetura de alto padrão e detalhe executivo.<br>
-                    • Disponibilidade da equipa técnica para integrar novos softwares e rotinas BIM.
-                </div>
-            </div>
-            <div class="swot-card" style="border-left: 4px solid #f59e0b;">
-                <div class="swot-title" style="color: #d97706;">🟡 Fraquezas (Weaknesses)</div>
-                <div style="font-size: 0.85rem; color: #334155; line-height: 1.55;">
-                    • Necessidade de padronização nas famílias e modelos paramétricos.<br>
-                    • Processos de deteção de colisões (Clash Detection) em fase inicial de estruturação.<br>
-                    • Documentação de processos (BEP interno) em consolidação.
-                </div>
-            </div>
-        """, unsafe_allow_html=True)
-
-    with c_swot2:
-        st.markdown("""
-            <div class="swot-card" style="border-left: 4px solid #0284c7; margin-bottom: 12px;">
-                <div class="swot-title" style="color: #0284c7;">🔵 Oportunidades (Opportunities)</div>
-                <div style="font-size: 0.85rem; color: #334155; line-height: 1.55;">
-                    • Posicionamento de destaque perante clientes e concursos que exigem BIM.<br>
-                    • Redução mensurável de retrabalho no estaleiro via coordenação 3D/4D.<br>
-                    • Oferta de serviços consultivos integrados e compatibilização avançada.
-                </div>
-            </div>
-            <div class="swot-card" style="border-left: 4px solid #ef4444;">
-                <div class="swot-title" style="color: #dc2626;">🔴 Ameaças (Threats)</div>
-                <div style="font-size: 0.85rem; color: #334155; line-height: 1.55;">
-                    • Projetistas parceiros com práticas limitadas a CAD 2D tradicional.<br>
-                    • Prazos contratuais reduzidos que condicionam o tempo de arranque da modelação.<br>
-                    • Custos de atualização contínua de licenças e postos de trabalho de alto rendimento.
-                </div>
-            </div>
-        """, unsafe_allow_html=True)
+            """, unsafe_allow_html=True)
 
 # -------------------------------------------------------------
 # CONTEÚDO DAS ABAS DE GOVERNANÇA ISO 19650
