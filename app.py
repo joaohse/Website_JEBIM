@@ -123,16 +123,19 @@ if not st.session_state["usuario_logado"]:
                 position: fixed;
                 top: 0; left: 0;
                 width: 100vw; height: 100vh;
-                background: rgba(7, 13, 24, 0.82);
+                background: rgba(83, 86, 97, 0.85);
                 backdrop-filter: blur(4px);
                 z-index: -1;
             }
             div[data-testid="stForm"] {
-                background: rgba(10, 18, 32, 0.85) !important;
-                border: 1px solid rgba(255, 255, 255, 0.12) !important;
-                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6) !important;
+                background: rgba(245, 245, 241, 0.95) !important;
+                border: 1px solid #C3BDBD !important;
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25) !important;
                 border-radius: 14px !important;
                 padding: 24px !important;
+            }
+            div[data-testid="stForm"] label, div[data-testid="stForm"] h1, div[data-testid="stForm"] p {
+                color: #535661 !important;
             }
         </style>
     """, unsafe_allow_html=True)
@@ -158,7 +161,7 @@ if not st.session_state["usuario_logado"]:
             st.markdown(
                 f"""
                 <div style="margin-top: 12px; margin-left: 10px; width: 140px;">
-                    <img src="data:image/png;base64,{b64_logo}" style="width: 100%; filter: invert(1) brightness(1.2);">
+                    <img src="data:image/png;base64,{b64_logo}" style="width: 100%; filter: brightness(1.2);">
                 </div>
                 """,
                 unsafe_allow_html=True
@@ -166,8 +169,8 @@ if not st.session_state["usuario_logado"]:
 
     st.markdown("""
         <div style="text-align: center; margin-top: 40px; margin-bottom: 25px;">
-            <h1 style="font-size: 2.2rem; font-weight: 800; letter-spacing: 0.06em; color: #ffffff; margin-bottom: 4px;">PORTAL BIM INSIGHT</h1>
-            <p style="color: #94a3b8; font-size: 1.05rem; margin-top: 0px;">Acompanhamento Estratégico</p>
+            <h1 style="font-size: 2.2rem; font-weight: 800; letter-spacing: 0.06em; color: #F5F5F1; margin-bottom: 4px;">PORTAL BIM INSIGHT</h1>
+            <p style="color: #C3BDBD; font-size: 1.05rem; margin-top: 0px;">Acompanhamento Estratégico</p>
         </div>
     """, unsafe_allow_html=True)
 
@@ -185,48 +188,63 @@ if not st.session_state["usuario_logado"]:
     st.stop()
 
 # -------------------------------------------------------------
-# CSS DO PORTAL: TEXTOS PRETOS + LINHAS PRETAS + BARRA ESCURA
+# PALETA 60-30-10 CSS
 # -------------------------------------------------------------
 st.markdown("""
 <style>
-    /* FUNDO BRANCO E TEXTOS GERAIS EM PRETO */
-    .stApp {
-        background-color: #ffffff !important;
-        color: #000000 !important;
-    }
+    /* 60% DOMINANTE: FUNDO OFF-WHITE (#F5F5F1) */
+    .stApp,
     section[data-testid="stMain"],
     div[data-testid="stAppViewBlockContainer"],
     div[data-testid="stMainBlockContainer"] {
-        background-color: #ffffff !important;
-        color: #000000 !important;
+        background-color: #F5F5F1 !important;
+        color: #535661 !important;
     }
     
-    /* FORÇAR COR PRETA EM TODOS OS TEXTOS DA ÁREA PRINCIPAL */
+    /* 10% DESTAQUE: TIPOGRAFIA PRINCIPAL EM AZUL/CINZA ESCURO (#535661) */
     section[data-testid="stMain"] h1,
     section[data-testid="stMain"] h2,
     section[data-testid="stMain"] h3,
-    section[data-testid="stMain"] h4,
+    section[data-testid="stMain"] h4 {
+        color: #535661 !important;
+        font-weight: 800 !important;
+    }
     section[data-testid="stMain"] p,
     section[data-testid="stMain"] span,
     section[data-testid="stMain"] div,
     section[data-testid="stMain"] label {
-        color: #000000 !important;
+        color: #535661 !important;
     }
 
-    /* BARRA LATERAL ESCURA COM ACABAMENTO ELEGANTE */
+    /* BOTÕES PRIMÁRIOS COM O DESTAQUE #535661 */
+    button[kind="primary"], div.stButton > button {
+        background-color: #535661 !important;
+        color: #F5F5F1 !important;
+        border: 1px solid #535661 !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+        transition: all 0.2s ease;
+    }
+    button[kind="primary"]:hover, div.stButton > button:hover {
+        background-color: #707671 !important;
+        border-color: #707671 !important;
+        color: #FFFFFF !important;
+    }
+
+    /* BARRA LATERAL */
     section[data-testid="stSidebar"] {
-        background-color: #09111e !important;
-        border-right: 1px solid #1e293b !important;
+        background-color: #535661 !important;
+        border-right: 1px solid #707671 !important;
     }
     section[data-testid="stSidebar"] h1,
     section[data-testid="stSidebar"] h2,
     section[data-testid="stSidebar"] h3,
     section[data-testid="stSidebar"] p,
     section[data-testid="stSidebar"] span {
-        color: #e2e8f0 !important;
+        color: #F5F5F1 !important;
     }
 
-    /* REMOÇÃO DA BOLINHA DO MENU NA ABA ESQUERDA */
+    /* MENU LATERAL CUSTOMIZADO SEM BOLINHA */
     div[data-testid="stRadio"] div[role="radiogroup"] {
         gap: 6px !important;
     }
@@ -242,8 +260,8 @@ st.markdown("""
     div[data-testid="stRadio"] div[role="radiogroup"] label {
         display: flex !important;
         align-items: center !important;
-        background: rgba(255, 255, 255, 0.04) !important;
-        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        background: rgba(245, 245, 241, 0.08) !important;
+        border: 1px solid rgba(195, 189, 189, 0.25) !important;
         border-radius: 8px !important;
         padding: 9px 14px !important;
         margin: 0 !important;
@@ -253,18 +271,18 @@ st.markdown("""
         box-sizing: border-box !important;
     }
     div[data-testid="stRadio"] div[role="radiogroup"] label:hover {
-        background: rgba(2, 132, 199, 0.15) !important;
-        border-color: rgba(56, 189, 248, 0.4) !important;
+        background: rgba(245, 245, 241, 0.18) !important;
+        border-color: #C3BDBD !important;
         transform: translateX(3px);
     }
     div[data-testid="stRadio"] div[role="radiogroup"] label:has(input:checked) {
-        background: rgba(2, 132, 199, 0.25) !important;
-        border-color: #0284c7 !important;
-        box-shadow: 0 2px 10px rgba(2, 132, 199, 0.25) !important;
+        background: #F5F5F1 !important;
+        border-color: #F5F5F1 !important;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15) !important;
     }
     div[data-testid="stRadio"] div[role="radiogroup"] label p,
     div[data-testid="stRadio"] div[role="radiogroup"] label div[data-testid="stMarkdownContainer"] p {
-        color: #94a3b8 !important;
+        color: #C3BDBD !important;
         font-size: 0.88rem !important;
         font-weight: 600 !important;
         margin: 0 !important;
@@ -272,53 +290,53 @@ st.markdown("""
     }
     div[data-testid="stRadio"] div[role="radiogroup"] label:has(input:checked) p,
     div[data-testid="stRadio"] div[role="radiogroup"] label:has(input:checked) div[data-testid="stMarkdownContainer"] p {
-        color: #38bdf8 !important;
-        font-weight: 700 !important;
+        color: #535661 !important;
+        font-weight: 800 !important;
     }
 
-    /* CARDS EM FUNDO BRANCO E TEXTOS 100% PRETOS */
+    /* 30% SECUNDÁRIA: CARDS EM FUNDOS CLAROS/MÉDIOS (#FFFFFF / #C3BDBD / #A6A7AB) */
     .metric-card {
-        background: #ffffff;
-        border: 1px solid #cbd5e1;
+        background: #FFFFFF;
+        border: 1px solid #C3BDBD;
         border-radius: 12px;
         padding: 18px 20px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 4px 14px rgba(83, 86, 97, 0.06);
     }
     .metric-title {
-        font-size: 0.8rem;
+        font-size: 0.82rem;
         font-weight: 700;
-        color: #000000 !important;
+        color: #707671 !important;
         letter-spacing: 0.02em;
         margin-bottom: 6px;
     }
     .metric-value {
-        font-size: 1.6rem;
+        font-size: 1.65rem;
         font-weight: 900;
-        color: #000000 !important;
+        color: #535661 !important;
         margin-bottom: 4px;
     }
     .metric-sub {
         font-size: 0.78rem;
-        color: #000000 !important;
+        color: #707671 !important;
         font-weight: 500;
     }
     .swot-card {
-        background: #ffffff;
-        border: 1px solid #cbd5e1;
+        background: #FFFFFF;
+        border: 1px solid #C3BDBD;
         border-radius: 10px;
         padding: 16px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        box-shadow: 0 2px 8px rgba(83, 86, 97, 0.05);
         height: 100%;
     }
     .swot-title {
         font-weight: 800;
         font-size: 0.95rem;
-        color: #000000 !important;
+        color: #535661 !important;
         margin-bottom: 8px;
     }
     .doc-box {
-        background: #f8fafc;
-        border: 1px solid #cbd5e1;
+        background: #FFFFFF;
+        border: 1px solid #C3BDBD;
         border-radius: 10px;
         padding: 16px 20px;
         margin-bottom: 12px;
@@ -420,7 +438,7 @@ if st.session_state["tipo_usuario"] == "admin":
                     }
                     DADOS["empresas"][emp_sel]["avaliacoes"].append(nova_av)
                     if salvar_dados(DADOS, SHA_ATUAL):
-                        st.success("Avaliação gravada e sincronizada no GitHub com sucesso!")
+                        st.success("Avaliação gravada e sincronizada com sucesso!")
                         st.rerun()
 
     with tab_doc:
@@ -449,7 +467,7 @@ if st.session_state["tipo_usuario"] == "admin":
                     }
                     DADOS["empresas"][emp_doc].setdefault("documentos", []).append(novo_doc)
                     if salvar_dados(DADOS, SHA_ATUAL):
-                        st.success(f"Documento '{arquivo.name}' disponibilizado para a empresa!")
+                        st.success(f"Documento '{arquivo.name}' disponibilizado com sucesso!")
                         st.rerun()
                 else:
                     st.warning("Forneça o título e selecione um arquivo.")
@@ -482,14 +500,14 @@ with st.sidebar:
     if b64_je_icon:
         icone_marca_html = f'<img src="data:image/png;base64,{b64_je_icon}" style="width: 38px; height: 38px; object-fit: contain; border-radius: 4px; filter: invert(1); display: block;">'
     else:
-        icone_marca_html = '<div style="width: 36px; height: 36px; background: #0284c7; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1rem; color: #fff;">JE</div>'
+        icone_marca_html = '<div style="width: 36px; height: 36px; background: #707671; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1rem; color: #F5F5F1;">JE</div>'
 
     html_header_side = f"""
         <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 24px; padding-top: 8px;">
             {icone_marca_html}
             <div>
-                <div style="font-weight: 800; font-size: 1.05rem; letter-spacing: 0.04em; color: #f8fafc;">BIM INSIGHT</div>
-                <div style="font-size: 0.7rem; color: #94a3b8;">Acompanhamento Estratégico</div>
+                <div style="font-weight: 800; font-size: 1.05rem; letter-spacing: 0.04em; color: #F5F5F1;">BIM INSIGHT</div>
+                <div style="font-size: 0.72rem; color: #C3BDBD;">Acompanhamento Estratégico</div>
             </div>
         </div>
     """
@@ -518,14 +536,14 @@ with st.sidebar:
     if st.button("Terminar Sessão", use_container_width=True):
         logout()
 
-# CABEÇALHO EXECUTIVO NA ÁREA PRINCIPAL
+# CABEÇALHO EXECUTIVO
 html_topo_exec = f"""
     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
         <div>
-            <h1 style="font-size: 1.95rem; font-weight: 900; color: #000000; margin: 0;">{nome_empresa}</h1>
-            <p style="font-size: 0.95rem; color: #000000; margin: 4px 0 0 0; font-weight: 700;">Visão Estratégica BIM</p>
+            <h1 style="font-size: 1.95rem; font-weight: 900; color: #535661; margin: 0;">{nome_empresa}</h1>
+            <p style="font-size: 0.95rem; color: #707671; margin: 4px 0 0 0; font-weight: 600;">Visão Estratégica BIM</p>
         </div>
-        <div style="text-align: right; color: #000000; font-size: 0.82rem; line-height: 1.4; font-weight: 600;">
+        <div style="text-align: right; color: #707671; font-size: 0.82rem; line-height: 1.4; font-weight: 600;">
             Mais eficiência.<br>Melhores decisões.<br>Resultados sustentáveis.
         </div>
     </div>
@@ -533,34 +551,34 @@ html_topo_exec = f"""
 st.markdown(html_topo_exec, unsafe_allow_html=True)
 
 # -------------------------------------------------------------
-# FUNÇÃO PARA RENDERIZAR SECÇÕES DOCUMENTAIS (ISO 19650)
+# FUNÇÃO PARA RENDERIZAR MÓDULOS ISO 19650
 # -------------------------------------------------------------
 def renderizar_modulo_documental(sigla, nome_completo, descricao, norma_ref, objetivos):
     st.markdown(f"""
         <div style="margin-bottom: 20px;">
             <div style="display: flex; align-items: center; gap: 10px;">
-                <span style="background: #000000; color: #ffffff !important; font-weight: 800; font-size: 0.85rem; padding: 4px 10px; border-radius: 6px;">{sigla}</span>
-                <h2 style="font-size: 1.4rem; font-weight: 800; color: #000000; margin: 0;">{nome_completo}</h2>
+                <span style="background: #535661; color: #F5F5F1 !important; font-weight: 800; font-size: 0.85rem; padding: 4px 10px; border-radius: 6px;">{sigla}</span>
+                <h2 style="font-size: 1.4rem; font-weight: 800; color: #535661; margin: 0;">{nome_completo}</h2>
             </div>
-            <p style="font-size: 0.9rem; color: #000000; margin: 6px 0 0 0; font-weight: 500;">{descricao}</p>
+            <p style="font-size: 0.9rem; color: #707671; margin: 6px 0 0 0; font-weight: 500;">{descricao}</p>
         </div>
     """, unsafe_allow_html=True)
 
     c1, c2 = st.columns([1.8, 1.2])
     with c1:
         st.markdown(f"""
-            <div class="swot-card" style="border-left: 4px solid #000000;">
-                <div class="swot-title" style="color: #000000;">📌 Âmbito & Diretrizes de Aplicação</div>
-                <div style="font-size: 0.86rem; color: #000000; line-height: 1.6; font-weight: 500;">
+            <div class="swot-card" style="border-left: 4px solid #535661;">
+                <div class="swot-title">📌 Âmbito & Diretrizes de Aplicação</div>
+                <div style="font-size: 0.86rem; color: #535661; line-height: 1.6; font-weight: 500;">
                     {objetivos}
                 </div>
             </div>
         """, unsafe_allow_html=True)
     with c2:
         st.markdown(f"""
-            <div class="swot-card" style="border-left: 4px solid #000000;">
-                <div class="swot-title" style="color: #000000;">📐 Referência Normativa</div>
-                <div style="font-size: 0.86rem; color: #000000; line-height: 1.6; font-weight: 500;">
+            <div class="swot-card" style="border-left: 4px solid #707671;">
+                <div class="swot-title">📐 Referência Normativa</div>
+                <div style="font-size: 0.86rem; color: #535661; line-height: 1.6; font-weight: 500;">
                     <b>Padrão:</b> {norma_ref}<br>
                     <b>Governança:</b> Gestão da Informação em BIM<br>
                     <b>Responsável:</b> Consultoria JE BIM Management
@@ -569,7 +587,7 @@ def renderizar_modulo_documental(sigla, nome_completo, descricao, norma_ref, obj
         """, unsafe_allow_html=True)
 
     st.markdown("<div style='margin-top: 25px;'></div>", unsafe_allow_html=True)
-    st.markdown(f"<h3 style='color: #000000; font-weight: 800;'>📄 Documentos & Entregáveis Homologados ({sigla})</h3>", unsafe_allow_html=True)
+    st.markdown(f"<h3 style='color: #535661; font-weight: 800;'>📄 Documentos & Entregáveis Homologados ({sigla})</h3>", unsafe_allow_html=True)
 
     docs_categoria = [d for d in documentos if d.get("categoria") == sigla or sigla in d.get("titulo", "").upper()]
 
@@ -577,8 +595,8 @@ def renderizar_modulo_documental(sigla, nome_completo, descricao, norma_ref, obj
         st.markdown(f"""
             <div class="doc-box" style="text-align: center; padding: 30px 20px;">
                 <div style="font-size: 1.8rem; margin-bottom: 8px;">📑</div>
-                <div style="font-weight: 800; font-size: 1.05rem; color: #000000;">Documento em Fase de Estruturação / Homologação</div>
-                <div style="font-size: 0.85rem; color: #000000; margin-top: 4px;">
+                <div style="font-weight: 800; font-size: 1.05rem; color: #535661;">Documento em Fase de Estruturação / Homologação</div>
+                <div style="font-size: 0.85rem; color: #707671; margin-top: 4px;">
                     O documento de <b>{sigla}</b> está a ser desenvolvido com a equipa técnica. Assim que for concluído e validado, ficará disponível para descarregamento nesta secção.
                 </div>
             </div>
@@ -592,10 +610,10 @@ def renderizar_modulo_documental(sigla, nome_completo, descricao, norma_ref, obj
                 dt_doc = doc.get('data_envio', '-')
                 st.markdown(f"""
                     <div style="padding: 8px 0;">
-                        <div style="font-weight: 800; font-size: 1rem; color: #000000;">📄 {t_doc}</div>
-                        <div style="font-size: 0.85rem; color: #000000; margin-top: 3px;">{s_doc}</div>
-                        <div style="font-size: 0.78rem; color: #000000; margin-top: 4px;">
-                            <span style="background: #000000; color: #ffffff !important; padding: 2px 8px; border-radius: 4px; font-weight: 700;">Homologado</span>
+                        <div style="font-weight: 800; font-size: 1rem; color: #535661;">📄 {t_doc}</div>
+                        <div style="font-size: 0.85rem; color: #707671; margin-top: 3px;">{s_doc}</div>
+                        <div style="font-size: 0.78rem; color: #707671; margin-top: 4px;">
+                            <span style="background: #535661; color: #F5F5F1 !important; padding: 2px 8px; border-radius: 4px; font-weight: 700;">Homologado</span>
                             &nbsp;•&nbsp; Disponibilizado em: {dt_doc}
                         </div>
                     </div>
@@ -610,7 +628,7 @@ def renderizar_modulo_documental(sigla, nome_completo, descricao, norma_ref, obj
                     use_container_width=True,
                     key=f"dl_mod_{sigla}_{doc.get('titulo', '')}"
                 )
-            st.markdown("<div style='border-bottom: 1px solid #cbd5e1; margin-bottom: 10px;'></div>", unsafe_allow_html=True)
+            st.markdown("<div style='border-bottom: 1px solid #C3BDBD; margin-bottom: 10px;'></div>", unsafe_allow_html=True)
 
 # -------------------------------------------------------------
 # CONTEÚDO: VISÃO GERAL (DASHBOARD)
@@ -621,7 +639,7 @@ if menu_selecionado == "Visão Geral":
     else:
         ult_av = avaliacoes[-1]
         
-        # 1. CARDS KPIS SUPERIORES (TEXTOS TOTALMENTE PRETOS)
+        # 1. CARDS KPIS
         kpi1, kpi2, kpi3, kpi4 = st.columns(4)
         with kpi1:
             st.markdown(f"""
@@ -658,13 +676,13 @@ if menu_selecionado == "Visão Geral":
                 
         st.markdown("<div style='margin-top: 25px;'></div>", unsafe_allow_html=True)
         
-        # 2. GRÁFICOS ANALÍTICOS COM LINHAS E TEXTOS PRETOS
+        # 2. GRÁFICOS ANALÍTICOS (Ciclo: #535661 | Linhas Gerais: #C3BDBD)
         g1, g2 = st.columns(2)
         
         with g1:
             st.markdown("""
                 <div style="margin-bottom: 8px;">
-                    <h3 style="font-size: 1.2rem; font-weight: 800; color: #000000; margin: 0;">Equilíbrio de Competências (Radar)</h3>
+                    <h3 style="font-size: 1.2rem; font-weight: 800; color: #535661; margin: 0;">Equilíbrio de Competências (Radar)</h3>
                 </div>
             """, unsafe_allow_html=True)
             
@@ -675,49 +693,50 @@ if menu_selecionado == "Visão Geral":
             ]
             
             fig_radar = go.Figure()
-            # Linha preta sólida para o ciclo atual
+            # Linha do ciclo em #535661
             fig_radar.add_trace(go.Scatterpolar(
                 r=valores_atuais,
                 theta=categorias,
                 fill='toself',
-                fillcolor='rgba(0, 0, 0, 0.08)',
+                fillcolor='rgba(83, 86, 97, 0.15)',
                 name=ult_av['ciclo'],
-                line=dict(color='#000000', width=2.5),
-                marker=dict(size=6, color='#000000')
+                line=dict(color='#535661', width=2.5),
+                marker=dict(size=6, color='#535661')
             ))
             
-            # Se houver ciclo anterior, linha preta tracejada
             if len(avaliacoes) > 1:
                 penult_av = avaliacoes[-2]
                 valores_ant = [
                     penult_av.get('software', 0), penult_av.get('hardware', 0), penult_av.get('rede', 0),
                     penult_av.get('recursos', 0), penult_av.get('fluxo', 0), penult_av.get('produtos', 0), penult_av.get('politicas', 0)
                 ]
+                # Linha do ciclo anterior tracejada em tom suave
                 fig_radar.add_trace(go.Scatterpolar(
                     r=valores_ant,
                     theta=categorias,
                     name=penult_av['ciclo'],
-                    line=dict(color='#000000', dash='dash', width=1.5),
-                    marker=dict(size=5, color='#000000')
+                    line=dict(color='#707671', dash='dash', width=1.5),
+                    marker=dict(size=5, color='#707671')
                 ))
             
+            # Eixos e malhas em #C3BDBD
             fig_radar.update_layout(
                 polar=dict(
                     radialaxis=dict(
                         visible=True, 
                         range=[0, 40],
-                        gridcolor='#000000',
-                        linecolor='#000000',
-                        tickfont=dict(size=9, color='#000000', family='Arial, sans-serif')
+                        gridcolor='#C3BDBD',
+                        linecolor='#C3BDBD',
+                        tickfont=dict(size=9, color='#707671', family='Arial, sans-serif')
                     ),
                     angularaxis=dict(
-                        gridcolor='#000000',
-                        linecolor='#000000',
-                        tickfont=dict(size=11, color='#000000', family='Arial, sans-serif')
+                        gridcolor='#C3BDBD',
+                        linecolor='#C3BDBD',
+                        tickfont=dict(size=11, color='#535661', family='Arial, sans-serif')
                     )
                 ),
                 showlegend=True,
-                legend=dict(font=dict(color='#000000', family='Arial, sans-serif')),
+                legend=dict(font=dict(color='#535661', family='Arial, sans-serif')),
                 margin=dict(l=40, r=40, t=30, b=30),
                 height=350,
                 paper_bgcolor='rgba(0,0,0,0)',
@@ -728,36 +747,37 @@ if menu_selecionado == "Visão Geral":
         with g2:
             st.markdown("""
                 <div style="margin-bottom: 8px;">
-                    <h3 style="font-size: 1.2rem; font-weight: 800; color: #000000; margin: 0;">Evolução Histórica da Maturidade</h3>
+                    <h3 style="font-size: 1.2rem; font-weight: 800; color: #535661; margin: 0;">Evolução Histórica da Maturidade</h3>
                 </div>
             """, unsafe_allow_html=True)
             
             df_hist = pd.DataFrame(avaliacoes)
             fig_line = go.Figure()
-            # Linha preta sólida com marcadores pretos
+            # Linha de ciclo em #535661
             fig_line.add_trace(go.Scatter(
                 x=df_hist['ciclo'],
                 y=df_hist['media_global'],
                 mode='lines+markers+text',
                 text=[f"{v} pts" for v in df_hist['media_global']],
                 textposition="top center",
-                textfont=dict(color='#000000', size=11, family='Arial, sans-serif'),
-                line=dict(color='#000000', width=3),
-                marker=dict(size=8, color='#000000')
+                textfont=dict(color='#535661', size=11, family='Arial, sans-serif'),
+                line=dict(color='#535661', width=3),
+                marker=dict(size=8, color='#535661')
             ))
+            # Eixos e malhas em #C3BDBD
             fig_line.update_layout(
                 yaxis=dict(
                     range=[0, 42], 
-                    title=dict(text="Pontuação Média", font=dict(color='#000000', size=11)),
-                    gridcolor='#cbd5e1',
-                    linecolor='#000000',
-                    tickfont=dict(color='#000000', size=10)
+                    title=dict(text="Pontuação Média", font=dict(color='#707671', size=11)),
+                    gridcolor='#C3BDBD',
+                    linecolor='#C3BDBD',
+                    tickfont=dict(color='#707671', size=10)
                 ),
                 xaxis=dict(
-                    title=dict(text="Ciclos de Auditoria", font=dict(color='#000000', size=11)),
-                    gridcolor='#cbd5e1',
-                    linecolor='#000000',
-                    tickfont=dict(color='#000000', size=10)
+                    title=dict(text="Ciclos de Auditoria", font=dict(color='#707671', size=11)),
+                    gridcolor='#C3BDBD',
+                    linecolor='#C3BDBD',
+                    tickfont=dict(color='#707671', size=10)
                 ),
                 height=350,
                 margin=dict(l=40, r=40, t=30, b=30),
@@ -766,22 +786,22 @@ if menu_selecionado == "Visão Geral":
             )
             st.plotly_chart(fig_line, use_container_width=True)
 
-        # 3. IDENTIDADE ESTRATÉGICA CORPORATIVA (TEXTOS PRETOS)
+        # 3. IDENTIDADE ESTRATÉGICA CORPORATIVA
         st.markdown("<div style='margin-top: 35px;'></div>", unsafe_allow_html=True)
         st.markdown("""
             <div style="margin-bottom: 14px;">
-                <h3 style="font-size: 1.25rem; font-weight: 800; color: #000000; margin: 0;">🎯 Identidade Estratégica Corporativa</h3>
-                <p style="font-size: 0.88rem; color: #000000; margin: 2px 0 0 0; font-weight: 500;">Diretrizes fundamentais para orientar a transformação digital e os padrões de entrega</p>
+                <h3 style="font-size: 1.25rem; font-weight: 800; color: #535661; margin: 0;">🎯 Identidade Estratégica Corporativa</h3>
+                <p style="font-size: 0.88rem; color: #707671; margin: 2px 0 0 0; font-weight: 500;">Diretrizes fundamentais para orientar a transformação digital e os padrões de entrega</p>
             </div>
         """, unsafe_allow_html=True)
 
         col_m, col_v, col_val = st.columns(3)
         with col_m:
             st.markdown("""
-                <div class="metric-card" style="min-height: 240px; border-top: 4px solid #000000;">
+                <div class="metric-card" style="min-height: 240px; border-top: 4px solid #535661;">
                     <div style="font-size: 1.2rem; margin-bottom: 8px;">🎯</div>
-                    <div style="font-weight: 800; font-size: 1.1rem; color: #000000; margin-bottom: 8px;">Missão</div>
-                    <div style="font-size: 0.88rem; color: #000000; line-height: 1.6; font-weight: 500;">
+                    <div style="font-weight: 800; font-size: 1.1rem; color: #535661; margin-bottom: 8px;">Missão</div>
+                    <div style="font-size: 0.88rem; color: #535661; line-height: 1.6; font-weight: 500;">
                         Desenvolver projetos integrados e gestão técnica com excelência, transformando necessidades espaciais e operacionais em soluções arquitetónicas eficientes, sustentáveis e tecnologicamente sólidas.
                     </div>
                 </div>
@@ -789,10 +809,10 @@ if menu_selecionado == "Visão Geral":
 
         with col_v:
             st.markdown("""
-                <div class="metric-card" style="min-height: 240px; border-top: 4px solid #000000;">
+                <div class="metric-card" style="min-height: 240px; border-top: 4px solid #707671;">
                     <div style="font-size: 1.2rem; margin-bottom: 8px;">🔭</div>
-                    <div style="font-weight: 800; font-size: 1.1rem; color: #000000; margin-bottom: 8px;">Visão</div>
-                    <div style="font-size: 0.88rem; color: #000000; line-height: 1.6; font-weight: 500;">
+                    <div style="font-weight: 800; font-size: 1.1rem; color: #535661; margin-bottom: 8px;">Visão</div>
+                    <div style="font-size: 0.88rem; color: #535661; line-height: 1.6; font-weight: 500;">
                         Consolidar-se como referência regional em maturidade digital e metodologia BIM, garantindo tomadas de decisão antecipadas, previsibilidade de custo/obra e entregáveis de alto padrão construtivo.
                     </div>
                 </div>
@@ -800,10 +820,10 @@ if menu_selecionado == "Visão Geral":
 
         with col_val:
             st.markdown("""
-                <div class="metric-card" style="min-height: 240px; border-top: 4px solid #000000;">
+                <div class="metric-card" style="min-height: 240px; border-top: 4px solid #A6A7AB;">
                     <div style="font-size: 1.2rem; margin-bottom: 8px;">💎</div>
-                    <div style="font-weight: 800; font-size: 1.1rem; color: #000000; margin-bottom: 8px;">Valores</div>
-                    <div style="font-size: 0.88rem; color: #000000; line-height: 1.6; font-weight: 500;">
+                    <div style="font-weight: 800; font-size: 1.1rem; color: #535661; margin-bottom: 8px;">Valores</div>
+                    <div style="font-size: 0.88rem; color: #535661; line-height: 1.6; font-weight: 500;">
                         • <b>Rigor Técnico</b>: Modelação precisa e consistência na informação.<br>
                         • <b>Colaboração Aberta</b>: Integração ativa com parceiros e clientes.<br>
                         • <b>Inovação Contínua</b>: Adoção prática das melhores diretrizes BIM.<br>
@@ -812,29 +832,29 @@ if menu_selecionado == "Visão Geral":
                 </div>
             """, unsafe_allow_html=True)
 
-        # 4. ANÁLISE SWOT (TEXTOS PRETOS)
+        # 4. ANÁLISE SWOT
         st.markdown("<div style='margin-top: 35px;'></div>", unsafe_allow_html=True)
         st.markdown("""
             <div style="margin-bottom: 14px;">
-                <h3 style="font-size: 1.25rem; font-weight: 800; color: #000000; margin: 0;">📊 Matriz SWOT da Transformação BIM</h3>
-                <p style="font-size: 0.88rem; color: #000000; margin: 2px 0 0 0; font-weight: 500;">Mapeamento de forças internas e dinâmica externa de mercado</p>
+                <h3 style="font-size: 1.25rem; font-weight: 800; color: #535661; margin: 0;">📊 Matriz SWOT da Transformação BIM</h3>
+                <p style="font-size: 0.88rem; color: #707671; margin: 2px 0 0 0; font-weight: 500;">Mapeamento de forças internas e dinâmica externa de mercado</p>
             </div>
         """, unsafe_allow_html=True)
 
         c_swot1, c_swot2 = st.columns(2)
         with c_swot1:
             st.markdown("""
-                <div class="swot-card" style="border-left: 4px solid #000000; margin-bottom: 12px;">
-                    <div class="swot-title" style="color: #000000;">🟢 Forças (Strengths)</div>
-                    <div style="font-size: 0.88rem; color: #000000; line-height: 1.55; font-weight: 500;">
+                <div class="swot-card" style="border-left: 4px solid #535661; margin-bottom: 12px;">
+                    <div class="swot-title">🟢 Forças (Strengths)</div>
+                    <div style="font-size: 0.88rem; color: #535661; line-height: 1.55; font-weight: 500;">
                         • Empenho da liderança na consolidação dos fluxos digitais.<br>
                         • Reputação consolidada em arquitetura de alto padrão e detalhe executivo.<br>
                         • Disponibilidade da equipa técnica para integrar novos softwares e rotinas BIM.
                     </div>
                 </div>
-                <div class="swot-card" style="border-left: 4px solid #000000;">
-                    <div class="swot-title" style="color: #000000;">🟡 Fraquezas (Weaknesses)</div>
-                    <div style="font-size: 0.88rem; color: #000000; line-height: 1.55; font-weight: 500;">
+                <div class="swot-card" style="border-left: 4px solid #707671;">
+                    <div class="swot-title">🟡 Fraquezas (Weaknesses)</div>
+                    <div style="font-size: 0.88rem; color: #535661; line-height: 1.55; font-weight: 500;">
                         • Necessidade de padronização nas famílias e modelos paramétricos.<br>
                         • Processos de deteção de colisões (Clash Detection) em fase inicial de estruturação.<br>
                         • Documentação de processos (BEP interno) em consolidação.
@@ -844,17 +864,17 @@ if menu_selecionado == "Visão Geral":
 
         with c_swot2:
             st.markdown("""
-                <div class="swot-card" style="border-left: 4px solid #000000; margin-bottom: 12px;">
-                    <div class="swot-title" style="color: #000000;">🔵 Oportunidades (Opportunities)</div>
-                    <div style="font-size: 0.88rem; color: #000000; line-height: 1.55; font-weight: 500;">
+                <div class="swot-card" style="border-left: 4px solid #535661; margin-bottom: 12px;">
+                    <div class="swot-title">🔵 Oportunidades (Opportunities)</div>
+                    <div style="font-size: 0.88rem; color: #535661; line-height: 1.55; font-weight: 500;">
                         • Posicionamento de destaque perante clientes e concursos que exigem BIM.<br>
                         • Redução mensurável de retrabalho no estaleiro via coordenação 3D/4D.<br>
                         • Oferta de serviços consultivos integrados e compatibilização avançada.
                     </div>
                 </div>
-                <div class="swot-card" style="border-left: 4px solid #000000;">
-                    <div class="swot-title" style="color: #000000;">🔴 Ameaças (Threats)</div>
-                    <div style="font-size: 0.88rem; color: #000000; line-height: 1.55; font-weight: 500;">
+                <div class="swot-card" style="border-left: 4px solid #707671;">
+                    <div class="swot-title">🔴 Ameaças (Threats)</div>
+                    <div style="font-size: 0.88rem; color: #535661; line-height: 1.55; font-weight: 500;">
                         • Projetistas parceiros com práticas limitadas a CAD 2D tradicional.<br>
                         • Prazos contratuais reduzidos que condicionam o tempo de arranque da modelação.<br>
                         • Custos de atualização contínua de licenças e postos de trabalho de alto rendimento.
