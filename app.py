@@ -102,9 +102,6 @@ def logout():
 # -------------------------------------------------------------
 # TELA DE LOGIN COM BACKGROUND EM VÍDEO
 # -------------------------------------------------------------
-# -------------------------------------------------------------
-# TELA DE LOGIN COM BACKGROUND EM VÍDEO
-# -------------------------------------------------------------
 if not st.session_state["usuario_logado"]:
     # Codificação do vídeo e da logo em Base64
     b64_video = ""
@@ -121,7 +118,7 @@ if not st.session_state["usuario_logado"]:
     except Exception:
         pass
 
-    # Injeção de CSS com a linha e bordas em tom cinza da paleta
+    # Injeção de CSS para travar a cor cinza em qualquer tema (Light ou Dark)
     st.markdown(
         f"""
         <style>
@@ -160,29 +157,37 @@ if not st.session_state["usuario_logado"]:
                 z-index: -1;
             }}
             
-            /* Card do formulário com borda e divisória cinza */
+            /* Card do formulário com contorno cinza fixo */
             div[data-testid="stForm"] {{
                 background: rgba(15, 23, 42, 0.85) !important;
-                border: 1px solid #334155 !important; /* Borda cinza refinada */
+                border: 1px solid #334155 !important;
                 box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5) !important;
                 border-radius: 14px !important;
                 padding: 24px !important;
             }}
 
-            /* Linha separadora do rodapé do formulário em cinza */
+            /* Força a linha divisória nativa do stForm a ser cinza escuro (#334155) tanto no Light quanto no Dark */
+            div[data-testid="stForm"] [data-testid="stVerticalBlock"] > div:has(button[kind="secondaryFormSubmit"]),
+            div[data-testid="stForm"] [data-testid="stVerticalBlock"] > div:has(button[kind="primaryFormSubmit"]),
             div[data-testid="stForm"] > div:last-child {{
                 border-top: 1px solid #334155 !important;
-                padding-top: 16px !important;
-                margin-top: 8px !important;
+                padding-top: 14px !important;
+                margin-top: 6px !important;
             }}
 
-            /* Labels dos inputs em cinza claro */
+            /* Remove linhas ou bordas brancas padrão do Streamlit */
+            div[data-testid="stForm"] hr {{
+                border: none !important;
+                border-top: 1px solid #334155 !important;
+            }}
+
+            /* Labels dos inputs sempre claras para contrastar com o card escuro */
             div[data-testid="stForm"] label p {{
                 color: #CBD5E1 !important;
                 font-weight: 600 !important;
             }}
 
-            /* Campos de texto com contorno cinza */
+            /* Campos de texto com borda e fundo escuro consistentes */
             div[data-testid="stForm"] input {{
                 background-color: rgba(255, 255, 255, 0.07) !important;
                 color: #F8F9FA !important;
@@ -232,9 +237,6 @@ if not st.session_state["usuario_logado"]:
         with st.form("form_login"):
             usuario = st.text_input("Código de Acesso / Usuário")
             senha = st.text_input("Senha", type="password")
-            
-            # Linha divisória em cinza sutil antes do botão
-            st.markdown("<hr style='margin: 18px 0 14px 0; border: none; border-top: 1px solid #334155;'>", unsafe_allow_html=True)
             
             btn_entrar = st.form_submit_button("Entrar no Portal", use_container_width=True)
             
