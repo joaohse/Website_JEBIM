@@ -165,7 +165,7 @@ if not st.session_state["usuario_logado"]:
                 font-size: 0.88rem !important;
             }}
 
-            /* COR DO TEXTO DIGITADO: PRETO (#000000) */
+            /* Texto digitado em preto */
             div[data-testid="stForm"] input,
             div[data-testid="stForm"] input[type="text"],
             div[data-testid="stForm"] input[type="password"] {{
@@ -176,13 +176,11 @@ if not st.session_state["usuario_logado"]:
                 caret-color: #000000 !important;
             }}
 
-            /* Ícone de visualizar senha */
             div[data-testid="stForm"] svg {{
                 fill: #475569 !important;
                 color: #475569 !important;
             }}
 
-            /* Linha divisória em cinza escuro */
             div[data-testid="stForm"] [data-testid="stVerticalBlock"] > div:has(button),
             div[data-testid="stForm"] > div:last-child {{
                 border-top: 1px solid #334155 !important;
@@ -234,6 +232,7 @@ if not st.session_state["usuario_logado"]:
                 else:
                     st.error("Credenciais inválidas. Verifique o código e a senha.")
     st.stop()
+
 # -------------------------------------------------------------
 # PALETA 60-30-10: BASE #F8F9FA | ESTRUTURA #0A192F | DESTAQUE #F26419
 # -------------------------------------------------------------
@@ -248,7 +247,7 @@ st.markdown("""
         color: #0A192F !important;
     }
     
-    /* 30% ESTRUTURA: TIPOGRAFIA PRINCIPAL EM AZUL MARINHO PROFUNDO (#0A192F) */
+    /* 30% ESTRUTURA: TIPOGRAFIA EM AZUL MARINHO PROFUNDO (#0A192F) */
     section[data-testid="stMain"] h1,
     section[data-testid="stMain"] h2,
     section[data-testid="stMain"] h3,
@@ -263,7 +262,7 @@ st.markdown("""
         color: #1B263B !important;
     }
 
-    /* 30% ESTRUTURA: BARRA LATERAL EM AZUL MARINHO (#0A192F) */
+    /* BARRA LATERAL EM AZUL MARINHO (#0A192F) */
     section[data-testid="stSidebar"] {
         background-color: #0A192F !important;
         border-right: 1px solid #1B263B !important;
@@ -276,7 +275,7 @@ st.markdown("""
         color: #F8F9FA !important;
     }
 
-    /* 10% DESTAQUE: BOTÕES CALL-TO-ACTION EM LARANJA INDUSTRIAL (#F26419) */
+    /* 10% DESTAQUE: BOTÕES EM LARANJA INDUSTRIAL (#F26419) */
     button[kind="primary"], div.stButton > button {
         background-color: #F26419 !important;
         color: #FFFFFF !important;
@@ -346,7 +345,7 @@ st.markdown("""
         font-weight: 800 !important;
     }
 
-    /* CARTÕES DE INDICADORES NÍTIDOS E BEM DEFINIDOS */
+    /* CARDS */
     .metric-card {
         background: #FFFFFF;
         border: 1px solid #E2E8F0;
@@ -549,7 +548,7 @@ documentos = empresa_dados.get("documentos", [])
 
 b64_je_icon = get_base64_file("JE.png")
 
-# BARRA LATERAL COM A TAXONOMIA ISO 19650
+# BARRA LATERAL COM A TAXONOMIA ISO 19650 + ABA ENTREGÁVEIS
 with st.sidebar:
     if b64_je_icon:
         icone_marca_html = f'<img src="data:image/png;base64,{b64_je_icon}" style="width: 38px; height: 38px; object-fit: contain; border-radius: 4px; filter: invert(1); display: block;">'
@@ -569,6 +568,7 @@ with st.sidebar:
     
     lista_abas = [
         "Visão Geral",
+        "Entregáveis",
         "BIM Mandate",
         "BEP",
         "MIDP",
@@ -693,7 +693,7 @@ if menu_selecionado == "Visão Geral":
     else:
         ult_av = avaliacoes[-1]
         
-        # 1. CARDS KPIS SUPERIORES NÍTI DOS E DESTACADOS
+        # 1. CARDS KPIS
         kpi1, kpi2, kpi3, kpi4 = st.columns(4)
         with kpi1:
             st.markdown(f"""
@@ -747,7 +747,6 @@ if menu_selecionado == "Visão Geral":
             ]
             
             fig_radar = go.Figure()
-            # Ciclo atual em Laranja Industrial vibrante (#F26419)
             fig_radar.add_trace(go.Scatterpolar(
                 r=valores_atuais,
                 theta=categorias,
@@ -758,7 +757,6 @@ if menu_selecionado == "Visão Geral":
                 marker=dict(size=7, color='#F26419', line=dict(color='#FFFFFF', width=1.5))
             ))
             
-            # Ciclo anterior tracejado em tom escuro de contraste (#0A192F)
             if len(avaliacoes) > 1:
                 penult_av = avaliacoes[-2]
                 valores_ant = [
@@ -773,7 +771,6 @@ if menu_selecionado == "Visão Geral":
                     marker=dict(size=5, color='#0A192F')
                 ))
             
-            # Eixos e malhas com leitura em cinza e azul marinho
             fig_radar.update_layout(
                 polar=dict(
                     radialaxis=dict(
@@ -807,7 +804,6 @@ if menu_selecionado == "Visão Geral":
             
             df_hist = pd.DataFrame(avaliacoes)
             fig_line = go.Figure()
-            # Linha e pontos de marcação em Laranja Industrial (#F26419)
             fig_line.add_trace(go.Scatter(
                 x=df_hist['ciclo'],
                 y=df_hist['media_global'],
@@ -934,6 +930,70 @@ if menu_selecionado == "Visão Geral":
                     </div>
                 </div>
             """, unsafe_allow_html=True)
+
+# -------------------------------------------------------------
+# CONTEÚDO: ENTREGÁVEIS (CENTRAL GERAL DE DOWNLOADS)
+# -------------------------------------------------------------
+elif menu_selecionado == "Entregáveis":
+    total_docs = len(documentos)
+    txt_docs = "documento disponível" if total_docs == 1 else "documentos disponíveis"
+    
+    st.markdown(f"""
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <div>
+                <h2 style="font-size: 1.5rem; font-weight: 900; color: #0A192F; margin: 0;">📁 Central de Entregáveis</h2>
+                <p style="font-size: 0.88rem; color: #475569; margin: 4px 0 0 0; font-weight: 500;">Repositório completo de documentos técnicos, relatórios e planos de implementação</p>
+            </div>
+            <div style="font-size: 0.84rem; color: #0A192F; background: #E2E8F0; padding: 6px 14px; border-radius: 20px; font-weight: 700;">
+                📄 {total_docs} {txt_docs}
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
+
+    categorias_disponiveis = ["Todos", "BIM Mandate", "BEP", "MIDP", "OIR", "AIR", "PIR", "EIR", "Geral"]
+    filtro_cat = st.radio(
+        "Filtrar por Categoria",
+        categorias_disponiveis,
+        horizontal=True,
+        label_visibility="collapsed"
+    )
+
+    docs_filtrados = documentos
+    if filtro_cat != "Todos":
+        docs_filtrados = [d for d in documentos if d.get("categoria") == filtro_cat]
+
+    if not docs_filtrados:
+        st.info("Nenhum entregável disponível para a categoria selecionada.")
+    else:
+        st.markdown("<div style='margin-top: 15px;'></div>", unsafe_allow_html=True)
+        for doc in docs_filtrados:
+            col_d1, col_d2 = st.columns([3.8, 1.2])
+            with col_d1:
+                t_doc = doc.get('titulo', 'Documento')
+                s_doc = doc.get('subtitulo', doc.get('nome_arquivo', ''))
+                cat_doc = doc.get('categoria', 'Geral')
+                dt_doc = doc.get('data_envio', '-')
+                st.markdown(f"""
+                    <div style="padding: 8px 0;">
+                        <div style="font-weight: 800; font-size: 1rem; color: #0A192F;">📄 {t_doc}</div>
+                        <div style="font-size: 0.85rem; color: #475569; margin-top: 3px;">{s_doc}</div>
+                        <div style="font-size: 0.78rem; color: #64748B; margin-top: 4px;">
+                            <span style="background: #0A192F; color: #FFFFFF !important; padding: 2px 8px; border-radius: 4px; font-weight: 700;">{cat_doc}</span>
+                            &nbsp;•&nbsp; Disponibilizado em: {dt_doc}
+                        </div>
+                    </div>
+                """, unsafe_allow_html=True)
+            with col_d2:
+                st.write("")
+                bytes_bin = base64.b64decode(doc['conteudo_b64'])
+                st.download_button(
+                    label="⬇️ Baixar documento",
+                    data=bytes_bin,
+                    file_name=doc.get('nome_arquivo', 'documento.pdf'),
+                    use_container_width=True,
+                    key=f"dl_entregaveis_{doc.get('titulo', '')}_{doc.get('nome_arquivo', '')}"
+                )
+            st.markdown("<div style='border-bottom: 1px solid #E2E8F0; margin-bottom: 10px;'></div>", unsafe_allow_html=True)
 
 # -------------------------------------------------------------
 # CONTEÚDO DAS ABAS DE GOVERNANÇA ISO 19650
