@@ -1,3 +1,10 @@
 {
-  "empresas": {}
+  "empresas": {
+    "fz_arquitetura": {
+      "nome": "FZ Arquitetura, Projeto e Gerenciamento",
+      "senha": "fzbim2026",
+      "avaliacoes": [],
+      "documentos": []
+    }
+  }
 }
