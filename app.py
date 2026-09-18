@@ -120,7 +120,6 @@ if not st.session_state["usuario_logado"]:
     st.markdown(
         f"""
         <style>
-            /* 1. Remove cabeçalhos e fundos nativos */
             header[data-testid="stHeader"] {{
                 background: transparent !important;
                 z-index: 100;
@@ -128,8 +127,6 @@ if not st.session_state["usuario_logado"]:
             .stApp {{
                 background: transparent !important;
             }}
-            
-            /* 2. Vídeo de fundo em ecrã inteiro */
             .bg-video-container {{
                 position: fixed;
                 top: 0;
@@ -154,8 +151,6 @@ if not st.session_state["usuario_logado"]:
                 backdrop-filter: blur(4px);
                 z-index: -1;
             }}
-            
-            /* 3. Card do formulário de login */
             div[data-testid="stForm"] {{
                 background: rgba(15, 23, 42, 0.90) !important;
                 border: 1px solid #334155 !important;
@@ -163,8 +158,6 @@ if not st.session_state["usuario_logado"]:
                 border-radius: 14px !important;
                 padding: 24px !important;
             }}
-
-            /* 4. Rótulos dos campos sempre visíveis */
             div[data-testid="stForm"] label,
             div[data-testid="stForm"] label p {{
                 color: #CBD5E1 !important;
@@ -172,38 +165,27 @@ if not st.session_state["usuario_logado"]:
                 font-size: 0.88rem !important;
             }}
 
-            /* 5. Caixa de texto com fundo escuro e texto digitado 100% legível (Branco) */
-            div[data-testid="stForm"] div[data-baseweb="input"],
-            div[data-testid="stForm"] div[data-baseweb="base-input"] {{
-                background-color: #1E293B !important;
-                border: 1px solid #475569 !important;
-                border-radius: 8px !important;
-            }}
-            div[data-testid="stForm"] input {{
-                background-color: transparent !important;
-                color: #FFFFFF !important;
-                -webkit-text-fill-color: #FFFFFF !important;
+            /* COR DO TEXTO DIGITADO: PRETO (#000000) */
+            div[data-testid="stForm"] input,
+            div[data-testid="stForm"] input[type="text"],
+            div[data-testid="stForm"] input[type="password"] {{
+                color: #000000 !important;
+                -webkit-text-fill-color: #000000 !important;
+                font-weight: 600 !important;
                 font-size: 0.95rem !important;
-                font-weight: 500 !important;
-                caret-color: #FFFFFF !important;
-            }}
-            div[data-testid="stForm"] input::placeholder {{
-                color: #64748B !important;
-                -webkit-text-fill-color: #64748B !important;
+                caret-color: #000000 !important;
             }}
 
-            /* 6. Ícone do olho (mostrar/ocultar senha) */
+            /* Ícone de visualizar senha */
             div[data-testid="stForm"] svg {{
-                fill: #94A3B8 !important;
-                color: #94A3B8 !important;
+                fill: #475569 !important;
+                color: #475569 !important;
             }}
 
-            /* 7. Linha divisória antes do botão em cinzento escuro (#334155) em qualquer tema */
+            /* Linha divisória em cinza escuro */
             div[data-testid="stForm"] [data-testid="stVerticalBlock"] > div:has(button),
-            div[data-testid="stForm"] > div:last-child,
-            div[data-testid="stForm"] hr {{
+            div[data-testid="stForm"] > div:last-child {{
                 border-top: 1px solid #334155 !important;
-                border-color: #334155 !important;
                 margin-top: 14px !important;
                 padding-top: 14px !important;
             }}
@@ -219,7 +201,6 @@ if not st.session_state["usuario_logado"]:
         unsafe_allow_html=True
     )
 
-    # Logótipo
     col_logo, _ = st.columns([1, 4])
     with col_logo:
         if b64_logo:
@@ -232,7 +213,6 @@ if not st.session_state["usuario_logado"]:
                 unsafe_allow_html=True
             )
 
-    # Título Principal e Subtítulo
     st.markdown("""
         <div style="text-align: center; margin-top: 35px; margin-bottom: 25px;">
             <h1 style="font-size: 2.3rem; font-weight: 800; letter-spacing: 0.05em; margin-bottom: 4px; color: #ffffff; text-shadow: 0 2px 10px rgba(0,0,0,0.6);">PORTAL BIM INSIGHT</h1>
@@ -240,12 +220,11 @@ if not st.session_state["usuario_logado"]:
         </div>
     """, unsafe_allow_html=True)
 
-    # Card de Login
     c1, c2, c3 = st.columns([1, 1.15, 1])
     with c2:
         with st.form("form_login"):
-            usuario = st.text_input("Código de Acesso / Utilizador")
-            senha = st.text_input("Palavra-passe", type="password")
+            usuario = st.text_input("Código de Acesso / Usuário")
+            senha = st.text_input("Senha", type="password")
             btn_entrar = st.form_submit_button("Entrar no Portal", use_container_width=True)
             
             if btn_entrar:
@@ -253,9 +232,8 @@ if not st.session_state["usuario_logado"]:
                     st.success("Acesso autorizado!")
                     st.rerun()
                 else:
-                    st.error("Credenciais inválidas. Verifique o código e a palavra-passe.")
+                    st.error("Credenciais inválidas. Verifique o código e a senha.")
     st.stop()
-
 # -------------------------------------------------------------
 # PALETA 60-30-10: BASE #F8F9FA | ESTRUTURA #0A192F | DESTAQUE #F26419
 # -------------------------------------------------------------
