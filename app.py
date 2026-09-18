@@ -103,7 +103,6 @@ def logout():
 # TELA DE LOGIN COM BACKGROUND EM VÍDEO
 # -------------------------------------------------------------
 if not st.session_state["usuario_logado"]:
-    # Codificação do vídeo e da logo em Base64
     b64_video = ""
     try:
         with open("124333-730771399_medium.mp4", "rb") as vf:
@@ -118,11 +117,10 @@ if not st.session_state["usuario_logado"]:
     except Exception:
         pass
 
-    # Injeção de CSS para travar a cor cinza em qualquer tema (Light ou Dark)
     st.markdown(
         f"""
         <style>
-            /* Remove fundos padrões do Streamlit */
+            /* 1. Remove cabeçalhos e fundos nativos */
             header[data-testid="stHeader"] {{
                 background: transparent !important;
                 z-index: 100;
@@ -130,7 +128,8 @@ if not st.session_state["usuario_logado"]:
             .stApp {{
                 background: transparent !important;
             }}
-            /* Camada de Vídeo em Tela Cheia */
+            
+            /* 2. Vídeo de fundo em ecrã inteiro */
             .bg-video-container {{
                 position: fixed;
                 top: 0;
@@ -145,58 +144,68 @@ if not st.session_state["usuario_logado"]:
                 height: 100%;
                 object-fit: cover;
             }}
-            /* Overlay escuro para contraste */
             .bg-overlay {{
                 position: fixed;
                 top: 0;
                 left: 0;
                 width: 100vw;
                 height: 100vh;
-                background: rgba(11, 17, 32, 0.78);
+                background: rgba(11, 17, 32, 0.82);
                 backdrop-filter: blur(4px);
                 z-index: -1;
             }}
             
-            /* Card do formulário com contorno cinza fixo */
+            /* 3. Card do formulário de login */
             div[data-testid="stForm"] {{
-                background: rgba(15, 23, 42, 0.85) !important;
+                background: rgba(15, 23, 42, 0.90) !important;
                 border: 1px solid #334155 !important;
-                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5) !important;
+                box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6) !important;
                 border-radius: 14px !important;
                 padding: 24px !important;
             }}
 
-            /* Força a linha divisória nativa do stForm a ser cinza escuro (#334155) tanto no Light quanto no Dark */
-            div[data-testid="stForm"] [data-testid="stVerticalBlock"] > div:has(button[kind="secondaryFormSubmit"]),
-            div[data-testid="stForm"] [data-testid="stVerticalBlock"] > div:has(button[kind="primaryFormSubmit"]),
-            div[data-testid="stForm"] > div:last-child {{
-                border-top: 1px solid #334155 !important;
-                padding-top: 14px !important;
-                margin-top: 6px !important;
-            }}
-
-            /* Remove linhas ou bordas brancas padrão do Streamlit */
-            div[data-testid="stForm"] hr {{
-                border: none !important;
-                border-top: 1px solid #334155 !important;
-            }}
-
-            /* Labels dos inputs sempre claras para contrastar com o card escuro */
+            /* 4. Rótulos dos campos sempre visíveis */
+            div[data-testid="stForm"] label,
             div[data-testid="stForm"] label p {{
                 color: #CBD5E1 !important;
                 font-weight: 600 !important;
+                font-size: 0.88rem !important;
             }}
 
-            /* Campos de texto com borda e fundo escuro consistentes */
-            div[data-testid="stForm"] input {{
-                background-color: rgba(255, 255, 255, 0.07) !important;
-                color: #F8F9FA !important;
+            /* 5. Caixa de texto com fundo escuro e texto digitado 100% legível (Branco) */
+            div[data-testid="stForm"] div[data-baseweb="input"],
+            div[data-testid="stForm"] div[data-baseweb="base-input"] {{
+                background-color: #1E293B !important;
                 border: 1px solid #475569 !important;
                 border-radius: 8px !important;
             }}
-            div[data-testid="stForm"] input:focus {{
-                border-color: #94A3B8 !important;
-                box-shadow: 0 0 0 1px #94A3B8 !important;
+            div[data-testid="stForm"] input {{
+                background-color: transparent !important;
+                color: #FFFFFF !important;
+                -webkit-text-fill-color: #FFFFFF !important;
+                font-size: 0.95rem !important;
+                font-weight: 500 !important;
+                caret-color: #FFFFFF !important;
+            }}
+            div[data-testid="stForm"] input::placeholder {{
+                color: #64748B !important;
+                -webkit-text-fill-color: #64748B !important;
+            }}
+
+            /* 6. Ícone do olho (mostrar/ocultar senha) */
+            div[data-testid="stForm"] svg {{
+                fill: #94A3B8 !important;
+                color: #94A3B8 !important;
+            }}
+
+            /* 7. Linha divisória antes do botão em cinzento escuro (#334155) em qualquer tema */
+            div[data-testid="stForm"] [data-testid="stVerticalBlock"] > div:has(button),
+            div[data-testid="stForm"] > div:last-child,
+            div[data-testid="stForm"] hr {{
+                border-top: 1px solid #334155 !important;
+                border-color: #334155 !important;
+                margin-top: 14px !important;
+                padding-top: 14px !important;
             }}
         </style>
         
@@ -210,7 +219,7 @@ if not st.session_state["usuario_logado"]:
         unsafe_allow_html=True
     )
 
-    # Header / Logo
+    # Logótipo
     col_logo, _ = st.columns([1, 4])
     with col_logo:
         if b64_logo:
@@ -231,13 +240,12 @@ if not st.session_state["usuario_logado"]:
         </div>
     """, unsafe_allow_html=True)
 
-    # Card de Login Centralizado
+    # Card de Login
     c1, c2, c3 = st.columns([1, 1.15, 1])
     with c2:
         with st.form("form_login"):
-            usuario = st.text_input("Código de Acesso / Usuário")
-            senha = st.text_input("Senha", type="password")
-            
+            usuario = st.text_input("Código de Acesso / Utilizador")
+            senha = st.text_input("Palavra-passe", type="password")
             btn_entrar = st.form_submit_button("Entrar no Portal", use_container_width=True)
             
             if btn_entrar:
@@ -245,7 +253,7 @@ if not st.session_state["usuario_logado"]:
                     st.success("Acesso autorizado!")
                     st.rerun()
                 else:
-                    st.error("Credenciais inválidas. Verifique o código e a senha.")
+                    st.error("Credenciais inválidas. Verifique o código e a palavra-passe.")
     st.stop()
 
 # -------------------------------------------------------------
