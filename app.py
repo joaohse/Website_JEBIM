@@ -421,7 +421,8 @@ if st.session_state["tipo_usuario"] == "admin":
                         "senha": senha_emp,
                         "avaliacoes": [],
                         "documentos": [],
-                        "identidade": {},
+                        "identidade_atual": {},
+                        "identidade_sugestao": {},
                         "swot": {}
                     }
                     if salvar_dados(DADOS, SHA_ATUAL):
@@ -498,7 +499,7 @@ if st.session_state["tipo_usuario"] == "admin":
                         st.success("Avaliação gravada e sincronizada com sucesso!")
                         st.rerun()
 
-    # 3. Gerir Identidade Estratégica & Análise SWOT
+    # 3. Gerir Identidade Estratégica (Atual vs Sugestão) & Análise SWOT
     with tab_swot:
         st.subheader("Configurar Identidade Estratégica & Análise SWOT")
         empresas_opts = list(DADOS.get("empresas", {}).keys())
@@ -508,40 +509,53 @@ if st.session_state["tipo_usuario"] == "admin":
             emp_sel_swot = st.selectbox("Selecione a Empresa", empresas_opts, format_func=lambda x: DADOS["empresas"][x]["nome"], key="sel_emp_swot")
             dados_emp_atual = DADOS["empresas"][emp_sel_swot]
             
-            # Valores pré-existentes ou padrões
-            identidade_atual = dados_emp_atual.get("identidade", {})
+            # Puxa dados existentes
+            id_atual = dados_emp_atual.get("identidade_atual", dados_emp_atual.get("identidade", {}))
+            id_sugestao = dados_emp_atual.get("identidade_sugestao", {})
             swot_atual = dados_emp_atual.get("swot", {})
             
-            padrao_missao = "Desenvolver projetos integrados e gestão técnica com excelência, transformando necessidades espaciais e operacionais em soluções arquitetónicas eficientes, sustentáveis e tecnologicamente sólidas."
-            padrao_visao = "Consolidar-se como referência regional em maturidade digital e metodologia BIM, garantindo tomadas de decisão antecipadas, previsibilidade de custo/obra e entregáveis de alto padrão construtivo."
-            padrao_valores = "• Rigor Técnico: Modelação precisa e consistência na informação.\n• Colaboração Aberta: Integração ativa com parceiros e clientes.\n• Inovação Contínua: Adoção prática das melhores diretrizes BIM.\n• Sustentabilidade: Redução de retrabalho pela pré-construção virtual."
-            
-            padrao_forcas = "• Empenho da liderança na consolidação dos fluxos digitais.\n• Reputação consolidada em arquitetura de alto padrão e detalhe executivo.\n• Disponibilidade da equipa técnica para integrar novos softwares e rotinas BIM."
-            padrao_fraquezas = "• Necessidade de padronização nas famílias e modelos paramétricos.\n• Processos de deteção de colisões (Clash Detection) em fase inicial de estruturação.\n• Documentação de processos (BEP interno) em consolidação."
-            padrao_oportunidades = "• Posicionamento de destaque perante clientes e concursos que exigem BIM.\n• Redução mensurável de retrabalho no estaleiro via coordenação 3D/4D.\n• Oferta de serviços consultivos integrados e compatibilização avançada."
-            padrao_ameacas = "• Projetistas parceiros com práticas limitadas a CAD 2D tradicional.\n• Prazos contratuais reduzidos que condicionam o tempo de arranque da modelação.\n• Custos de atualização contínua de licenças e postos de trabalho de alto rendimento."
+            # Padrões vigentes da empresa
+            padrao_atual_missao = id_atual.get("missao", "Oferecer Conceito e Eficiência na Execução e Gestão de Projetos, Planejamento e Acompanhamento de Empreendimentos. Ser referência em entregas nos prazos estabelecidos e de acordo com melhores técnicas aplicáveis.")
+            padrao_atual_visao = id_atual.get("visao", "Buscar garantir que o projeto tenha soluções inteligentes, viabilidade na execução e supere as expectativas do cliente.")
+            padrao_atual_valores = id_atual.get("valores", "Ter compromisso de buscar soluções que tenham padrão de qualidade, sem esquecermos do melhor custo benefício. A arquitetura e a sustentabilidade se unem. Creditamos os valores considerados pelo cliente.")
+
+            # Padrões sugeridos pela consultoria
+            padrao_sugestao_missao = id_sugestao.get("missao", "Desenvolver projetos integrados e gestão técnica com excelência orientada à metodologia BIM, transformando necessidades espaciais e operacionais em soluções arquitetónicas eficientes, sustentáveis e de alta previsibilidade construtiva.")
+            padrao_sugestao_visao = id_sugestao.get("visao", "Consolidar-se como referência em maturidade digital e processos BIM integrados (ISO 19650), antecipando decisões executivas, otimizando custos e garantindo entregáveis de alto desempenho.")
+            padrao_sugestao_valores = id_sugestao.get("valores", "• Rigor Técnico: Modelação precisa e consistência da informação.\n• Colaboração Aberta: Integração transparente entre disciplinas e stakeholders.\n• Inovação Contínua: Adoção prática das melhores diretrizes e normas digitais.\n• Sustentabilidade: Redução mensurável de retrabalhos via coordenação virtual.")
 
             with st.form("form_identidade_swot"):
-                st.markdown("#### 🎯 Identidade Estratégica")
-                txt_missao = st.text_area("Missão", value=identidade_atual.get("missao", padrao_missao), height=100)
-                txt_visao = st.text_area("Visão", value=identidade_atual.get("visao", padrao_visao), height=100)
-                txt_valores = st.text_area("Valores", value=identidade_atual.get("valores", padrao_valores), height=120)
+                st.markdown("### 🏛️ Identidade Atual da Empresa (Como está hoje)")
+                txt_atual_missao = st.text_area("Missão Vigente", value=padrao_atual_missao, height=80)
+                txt_atual_visao = st.text_area("Visão Vigente", value=padrao_atual_visao, height=80)
+                txt_atual_valores = st.text_area("Valores Vigentes", value=padrao_atual_valores, height=90)
 
                 st.markdown("---")
-                st.markdown("#### 📊 Matriz SWOT")
+                st.markdown("### 💡 Sugestão de Alteração (Consultoria JE BIM Management)")
+                txt_sug_missao = st.text_area("Proposta de Missão", value=padrao_sugestao_missao, height=80)
+                txt_sug_visao = st.text_area("Proposta de Visão", value=padrao_sugestao_visao, height=80)
+                txt_sug_valores = st.text_area("Proposta de Valores", value=padrao_sugestao_valores, height=100)
+
+                st.markdown("---")
+                st.markdown("### 📊 Matriz SWOT")
                 c_swot_a, c_swot_b = st.columns(2)
                 with c_swot_a:
-                    txt_forcas = st.text_area("🟢 Forças (Strengths)", value=swot_atual.get("forcas", padrao_forcas), height=120)
-                    txt_fraquezas = st.text_area("🟡 Fraquezas (Weaknesses)", value=swot_atual.get("fraquezas", padrao_fraquezas), height=120)
+                    txt_forcas = st.text_area("🟢 Forças (Strengths)", value=swot_atual.get("forcas", "• Engajamento da liderança na consolidação dos fluxos digitais.\n• Reputação consolidada em arquitetura de alto padrão e detalhe executivo.\n• Disponibilidade técnica da equipa."), height=100)
+                    txt_fraquezas = st.text_area("🟡 Fraquezas (Weaknesses)", value=swot_atual.get("fraquezas", "• Necessidade de padronização nas famílias e templates paramétricos.\n• Fluxos de deteção de interferências (Clash Detection) em fase inicial.\n• Documentação de processos (BEP) em consolidação."), height=100)
                 with c_swot_b:
-                    txt_oportunidades = st.text_area("🔵 Oportunidades (Opportunities)", value=swot_atual.get("oportunidades", padrao_oportunidades), height=120)
-                    txt_ameacas = st.text_area("🔴 Ameaças (Threats)", value=swot_atual.get("ameacas", padrao_ameacas), height=120)
+                    txt_oportunidades = st.text_area("🔵 Oportunidades (Opportunities)", value=swot_atual.get("oportunidades", "• Diferenciação comercial perante editais e clientes corporativos com exigência BIM.\n• Redução drástica de retrabalhos em obra através da pré-construção virtual.\n• Oferta de serviços de coordenação BIM avançada."), height=100)
+                    txt_ameacas = st.text_area("🔴 Ameaças (Threats)", value=swot_atual.get("ameacas", "• Projetistas complementares com entregas limitadas a CAD 2D tradicional.\n• Prazos agressivos de mercado no início dos projetos.\n• Custos recorrentes de licenciamento e estações de alta performance."), height=100)
 
-                if st.form_submit_button("Salvar Identidade & SWOT", use_container_width=True):
-                    DADOS["empresas"][emp_sel_swot]["identidade"] = {
-                        "missao": txt_missao,
-                        "visao": txt_visao,
-                        "valores": txt_valores
+                if st.form_submit_button("Gravar Alterações de Identidade & SWOT", use_container_width=True):
+                    DADOS["empresas"][emp_sel_swot]["identidade_atual"] = {
+                        "missao": txt_atual_missao,
+                        "visao": txt_atual_visao,
+                        "valores": txt_atual_valores
+                    }
+                    DADOS["empresas"][emp_sel_swot]["identidade_sugestao"] = {
+                        "missao": txt_sug_missao,
+                        "visao": txt_sug_visao,
+                        "valores": txt_sug_valores
                     }
                     DADOS["empresas"][emp_sel_swot]["swot"] = {
                         "forcas": txt_forcas,
@@ -550,7 +564,7 @@ if st.session_state["tipo_usuario"] == "admin":
                         "ameacas": txt_ameacas
                     }
                     if salvar_dados(DADOS, SHA_ATUAL):
-                        st.success("Identidade Estratégica e Matriz SWOT atualizadas com sucesso!")
+                        st.success("Identidade Estratégica e Matriz SWOT guardadas com sucesso!")
                         st.rerun()
 
     # 4. Upload de Documentos
@@ -606,7 +620,10 @@ empresa_dados = DADOS.get("empresas", {}).get(empresa_id, {})
 nome_empresa = empresa_dados.get("nome", "Organização")
 avaliacoes = empresa_dados.get("avaliacoes", [])
 documentos = empresa_dados.get("documentos", [])
-identidade_emp = empresa_dados.get("identidade", {})
+
+# Identidades estruturadas (Atual vs Sugestão)
+identidade_atual_emp = empresa_dados.get("identidade_atual", empresa_dados.get("identidade", {}))
+identidade_sugestao_emp = empresa_dados.get("identidade_sugestao", {})
 swot_emp = empresa_dados.get("swot", {})
 
 b64_je_icon = get_base64_file("JE.png")
@@ -897,54 +914,115 @@ if menu_selecionado == "Visão Geral":
             )
             st.plotly_chart(fig_line, use_container_width=True)
 
-        # 3. IDENTIDADE ESTRATÉGICA CORPORATIVA (DINÂMICA)
+        # 3. IDENTIDADE ESTRATÉGICA CORPORATIVA COM ABAS (ATUAL VS SUGESTÃO)
         st.markdown("<div style='margin-top: 35px;'></div>", unsafe_allow_html=True)
         st.markdown("""
-            <div style="margin-bottom: 14px;">
+            <div style="margin-bottom: 12px;">
                 <h3 style="font-size: 1.25rem; font-weight: 800; color: #0A192F; margin: 0;">🎯 Identidade Estratégica Corporativa</h3>
                 <p style="font-size: 0.88rem; color: #475569; margin: 2px 0 0 0; font-weight: 500;">Diretrizes fundamentais para orientar a transformação digital e os padrões de entrega</p>
             </div>
         """, unsafe_allow_html=True)
 
-        missao_exib = identidade_emp.get("missao", "Desenvolver projetos integrados e gestão técnica com excelência, transformando necessidades espaciais e operacionais em soluções arquitetónicas eficientes, sustentáveis e tecnologicamente sólidas.").replace('\n', '<br>')
-        visao_exib = identidade_emp.get("visao", "Consolidar-se como referência regional em maturidade digital e metodologia BIM, garantindo tomadas de decisão antecipadas, previsibilidade de custo/obra e entregáveis de alto padrão construtivo.").replace('\n', '<br>')
-        valores_exib = identidade_emp.get("valores", "• Rigor Técnico: Modelação precisa e consistência na informação.<br>• Colaboração Aberta: Integração ativa com parceiros e clientes.<br>• Inovação Contínua: Adoção prática das melhores diretrizes BIM.<br>• Sustentabilidade: Redução de retrabalho pela pré-construção virtual.").replace('\n', '<br>')
+        # Sub-abas para alternar entre o estado atual e a sugestão consultiva
+        subtab_atual, subtab_sugestao = st.tabs(["🏛️ Estado Atual da Empresa", "💡 Proposta Consultiva JE"])
 
-        col_m, col_v, col_val = st.columns(3)
-        with col_m:
-            st.markdown(f"""
-                <div class="metric-card" style="min-height: 240px; border-top: 4px solid #F26419;">
-                    <div style="font-size: 1.2rem; margin-bottom: 8px;">🎯</div>
-                    <div style="font-weight: 800; font-size: 1.1rem; color: #0A192F; margin-bottom: 8px;">Missão</div>
-                    <div style="font-size: 0.88rem; color: #1B263B; line-height: 1.6; font-weight: 500;">
-                        {missao_exib}
+        with subtab_atual:
+            missao_atual_txt = identidade_atual_emp.get(
+                "missao", 
+                "Oferecer Conceito e Eficiência na Execução e Gestão de Projetos, Planejamento e Acompanhamento de Empreendimentos. Ser referência em entregas nos prazos estabelecidos e de acordo com melhores técnicas aplicáveis."
+            ).replace('\n', '<br>')
+            visao_atual_txt = identidade_atual_emp.get(
+                "visao", 
+                "Buscar garantir que o projeto tenha soluções inteligentes, viabilidade na execução e supere as expectativas do cliente."
+            ).replace('\n', '<br>')
+            valores_atual_txt = identidade_atual_emp.get(
+                "valores", 
+                "Ter compromisso de buscar soluções que tenham padrão de qualidade, sem esquecermos do melhor custo benefício. A arquitetura e a sustentabilidade se unem. Creditamos os valores considerados pelo cliente."
+            ).replace('\n', '<br>')
+
+            col_m1, col_v1, col_val1 = st.columns(3)
+            with col_m1:
+                st.markdown(f"""
+                    <div class="metric-card" style="min-height: 250px; border-top: 4px solid #0A192F;">
+                        <div style="font-size: 1.2rem; margin-bottom: 8px;">🎯</div>
+                        <div style="font-weight: 800; font-size: 1.05rem; color: #0A192F; margin-bottom: 8px;">Missão Vigente</div>
+                        <div style="font-size: 0.86rem; color: #1B263B; line-height: 1.6; font-weight: 500;">
+                            {missao_atual_txt}
+                        </div>
                     </div>
-                </div>
-            """, unsafe_allow_html=True)
+                """, unsafe_allow_html=True)
 
-        with col_v:
-            st.markdown(f"""
-                <div class="metric-card" style="min-height: 240px; border-top: 4px solid #0A192F;">
-                    <div style="font-size: 1.2rem; margin-bottom: 8px;">🔭</div>
-                    <div style="font-weight: 800; font-size: 1.1rem; color: #0A192F; margin-bottom: 8px;">Visão</div>
-                    <div style="font-size: 0.88rem; color: #1B263B; line-height: 1.6; font-weight: 500;">
-                        {visao_exib}
+            with col_v1:
+                st.markdown(f"""
+                    <div class="metric-card" style="min-height: 250px; border-top: 4px solid #0A192F;">
+                        <div style="font-size: 1.2rem; margin-bottom: 8px;">🔭</div>
+                        <div style="font-weight: 800; font-size: 1.05rem; color: #0A192F; margin-bottom: 8px;">Visão Vigente</div>
+                        <div style="font-size: 0.86rem; color: #1B263B; line-height: 1.6; font-weight: 500;">
+                            {visao_atual_txt}
+                        </div>
                     </div>
-                </div>
-            """, unsafe_allow_html=True)
+                """, unsafe_allow_html=True)
 
-        with col_val:
-            st.markdown(f"""
-                <div class="metric-card" style="min-height: 240px; border-top: 4px solid #F26419;">
-                    <div style="font-size: 1.2rem; margin-bottom: 8px;">💎</div>
-                    <div style="font-weight: 800; font-size: 1.1rem; color: #0A192F; margin-bottom: 8px;">Valores</div>
-                    <div style="font-size: 0.88rem; color: #1B263B; line-height: 1.6; font-weight: 500;">
-                        {valores_exib}
+            with col_val1:
+                st.markdown(f"""
+                    <div class="metric-card" style="min-height: 250px; border-top: 4px solid #0A192F;">
+                        <div style="font-size: 1.2rem; margin-bottom: 8px;">💎</div>
+                        <div style="font-weight: 800; font-size: 1.05rem; color: #0A192F; margin-bottom: 8px;">Valores Vigentes</div>
+                        <div style="font-size: 0.86rem; color: #1B263B; line-height: 1.6; font-weight: 500;">
+                            {valores_atual_txt}
+                        </div>
                     </div>
-                </div>
-            """, unsafe_allow_html=True)
+                """, unsafe_allow_html=True)
 
-        # 4. ANÁLISE SWOT (DINÂMICA)
+        with subtab_sugestao:
+            missao_sug_txt = identidade_sugestao_emp.get(
+                "missao", 
+                "Desenvolver projetos integrados e gestão técnica com excelência orientada à metodologia BIM, transformando necessidades espaciais e operacionais em soluções arquitetónicas eficientes, sustentáveis e de alta previsibilidade construtiva."
+            ).replace('\n', '<br>')
+            visao_sug_txt = identidade_sugestao_emp.get(
+                "visao", 
+                "Consolidar-se como referência em maturidade digital e processos BIM integrados (ISO 19650), antecipando decisões executivas, otimizando custos e garantindo entregáveis de alto desempenho."
+            ).replace('\n', '<br>')
+            valores_sug_txt = identidade_sugestao_emp.get(
+                "valores", 
+                "• Rigor Técnico: Modelação precisa e consistência da informação.<br>• Colaboração Aberta: Integração transparente entre disciplinas e stakeholders.<br>• Inovação Contínua: Adoção prática das melhores diretrizes e normas digitais.<br>• Sustentabilidade: Redução mensurável de retrabalhos via coordenação virtual."
+            ).replace('\n', '<br>')
+
+            col_m2, col_v2, col_val2 = st.columns(3)
+            with col_m2:
+                st.markdown(f"""
+                    <div class="metric-card" style="min-height: 250px; border-top: 4px solid #F26419;">
+                        <div style="font-size: 1.2rem; margin-bottom: 8px;">💡</div>
+                        <div style="font-weight: 800; font-size: 1.05rem; color: #0A192F; margin-bottom: 8px;">Proposta de Missão</div>
+                        <div style="font-size: 0.86rem; color: #1B263B; line-height: 1.6; font-weight: 500;">
+                            {missao_sug_txt}
+                        </div>
+                    </div>
+                """, unsafe_allow_html=True)
+
+            with col_v2:
+                st.markdown(f"""
+                    <div class="metric-card" style="min-height: 250px; border-top: 4px solid #F26419;">
+                        <div style="font-size: 1.2rem; margin-bottom: 8px;">🔭</div>
+                        <div style="font-weight: 800; font-size: 1.05rem; color: #0A192F; margin-bottom: 8px;">Proposta de Visão</div>
+                        <div style="font-size: 0.86rem; color: #1B263B; line-height: 1.6; font-weight: 500;">
+                            {visao_sug_txt}
+                        </div>
+                    </div>
+                """, unsafe_allow_html=True)
+
+            with col_val2:
+                st.markdown(f"""
+                    <div class="metric-card" style="min-height: 250px; border-top: 4px solid #F26419;">
+                        <div style="font-size: 1.2rem; margin-bottom: 8px;">💎</div>
+                        <div style="font-weight: 800; font-size: 1.05rem; color: #0A192F; margin-bottom: 8px;">Proposta de Valores</div>
+                        <div style="font-size: 0.86rem; color: #1B263B; line-height: 1.6; font-weight: 500;">
+                            {valores_sug_txt}
+                        </div>
+                    </div>
+                """, unsafe_allow_html=True)
+
+        # 4. ANÁLISE SWOT
         st.markdown("<div style='margin-top: 35px;'></div>", unsafe_allow_html=True)
         st.markdown("""
             <div style="margin-bottom: 14px;">
@@ -953,10 +1031,10 @@ if menu_selecionado == "Visão Geral":
             </div>
         """, unsafe_allow_html=True)
 
-        forcas_exib = swot_emp.get("forcas", "• Empenho da liderança na consolidação dos fluxos digitais.\n• Reputação consolidada em arquitetura de alto padrão e detalhe executivo.\n• Disponibilidade da equipa técnica para integrar novos softwares e rotinas BIM.").replace('\n', '<br>')
-        fraquezas_exib = swot_emp.get("fraquezas", "• Necessidade de padronização nas famílias e modelos paramétricos.\n• Processos de deteção de colisões (Clash Detection) em fase inicial de estruturação.\n• Documentação de processos (BEP interno) em consolidação.").replace('\n', '<br>')
-        oportunidades_exib = swot_emp.get("oportunidades", "• Posicionamento de destaque perante clientes e concursos que exigem BIM.\n• Redução mensurável de retrabalho no estaleiro via coordenação 3D/4D.\n• Oferta de serviços consultivos integrados e compatibilização avançada.").replace('\n', '<br>')
-        ameacas_exib = swot_emp.get("ameacas", "• Projetistas parceiros com práticas limitadas a CAD 2D tradicional.\n• Prazos contratuais reduzidos que condicionam o tempo de arranque da modelação.\n• Custos de atualização contínua de licenças e postos de trabalho de alto rendimento.").replace('\n', '<br>')
+        forcas_exib = swot_emp.get("forcas", "Em desenvolvimento").replace('\n', '<br>')
+        fraquezas_exib = swot_emp.get("fraquezas", "Em desenvolvimento").replace('\n', '<br>')
+        oportunidades_exib = swot_emp.get("oportunidades", "Em desenvolvimento").replace('\n', '<br>')
+        ameacas_exib = swot_emp.get("ameacas", "Em desenvolvimento").replace('\n', '<br>')
 
         c_swot1, c_swot2 = st.columns(2)
         with c_swot1:
