@@ -499,7 +499,7 @@ if st.session_state["tipo_usuario"] == "admin":
                         st.success("Avaliação gravada e sincronizada com sucesso!")
                         st.rerun()
 
-    # 3. Gerir Identidade Estratégica (Atual vs Sugestão) & Análise SWOT
+    # 3. Gerir Identidade Estratégica (Atual vs Proposta Consultiva) & Análise SWOT
     with tab_swot:
         st.subheader("Configurar Identidade Estratégica & Análise SWOT")
         empresas_opts = list(DADOS.get("empresas", {}).keys())
@@ -509,17 +509,14 @@ if st.session_state["tipo_usuario"] == "admin":
             emp_sel_swot = st.selectbox("Selecione a Empresa", empresas_opts, format_func=lambda x: DADOS["empresas"][x]["nome"], key="sel_emp_swot")
             dados_emp_atual = DADOS["empresas"][emp_sel_swot]
             
-            # Puxa dados existentes
             id_atual = dados_emp_atual.get("identidade_atual", dados_emp_atual.get("identidade", {}))
             id_sugestao = dados_emp_atual.get("identidade_sugestao", {})
             swot_atual = dados_emp_atual.get("swot", {})
             
-            # Padrões vigentes da empresa
-            padrao_atual_missao = id_atual.get("missao", "Oferecer Conceito e Eficiência na Execução e Gestão de Projetos, Planejamento e Acompanhamento de Empreendimentos. Ser referência em entregas nos prazos estabelecidos e de acordo com melhores técnicas aplicáveis.")
-            padrao_atual_visao = id_atual.get("visao", "Buscar garantir que o projeto tenha soluções inteligentes, viabilidade na execução e supere as expectativas do cliente.")
-            padrao_atual_valores = id_atual.get("valores", "Ter compromisso de buscar soluções que tenham padrão de qualidade, sem esquecermos do melhor custo benefício. A arquitetura e a sustentabilidade se unem. Creditamos os valores considerados pelo cliente.")
+            padrao_atual_missao = id_atual.get("missao", "Oferecer Conceito e Eficiência na Execução e Gestão de Projetos, Planejamento e Acompanhamento de Empreendimentos. Ser referência em entregas nos prazos estabelecidos e de acordo com melhores técnicas aplicáveis.")[cite: 14]
+            padrao_atual_visao = id_atual.get("visao", "Buscar garantir que o projeto tenha soluções inteligentes, viabilidade na execução e supere as expectativas do cliente.")[cite: 14]
+            padrao_atual_valores = id_atual.get("valores", "Ter compromisso de buscar soluções que tenham padrão de qualidade, sem esquecermos do melhor custo benefício. A arquitetura e a sustentabilidade se unem. Creditamos os valores considerados pelo cliente.")[cite: 14]
 
-            # Padrões sugeridos pela consultoria
             padrao_sugestao_missao = id_sugestao.get("missao", "Desenvolver projetos integrados e gestão técnica com excelência orientada à metodologia BIM, transformando necessidades espaciais e operacionais em soluções arquitetónicas eficientes, sustentáveis e de alta previsibilidade construtiva.")
             padrao_sugestao_visao = id_sugestao.get("visao", "Consolidar-se como referência em maturidade digital e processos BIM integrados (ISO 19650), antecipando decisões executivas, otimizando custos e garantindo entregáveis de alto desempenho.")
             padrao_sugestao_valores = id_sugestao.get("valores", "• Rigor Técnico: Modelação precisa e consistência da informação.\n• Colaboração Aberta: Integração transparente entre disciplinas e stakeholders.\n• Inovação Contínua: Adoção prática das melhores diretrizes e normas digitais.\n• Sustentabilidade: Redução mensurável de retrabalhos via coordenação virtual.")
@@ -531,7 +528,7 @@ if st.session_state["tipo_usuario"] == "admin":
                 txt_atual_valores = st.text_area("Valores Vigentes", value=padrao_atual_valores, height=90)
 
                 st.markdown("---")
-                st.markdown("### 💡 Sugestão de Alteração (Consultoria JE BIM Management)")
+                st.markdown("### 💡 Proposta Consultiva")
                 txt_sug_missao = st.text_area("Proposta de Missão", value=padrao_sugestao_missao, height=80)
                 txt_sug_visao = st.text_area("Proposta de Visão", value=padrao_sugestao_visao, height=80)
                 txt_sug_valores = st.text_area("Proposta de Valores", value=padrao_sugestao_valores, height=100)
@@ -621,7 +618,6 @@ nome_empresa = empresa_dados.get("nome", "Organização")
 avaliacoes = empresa_dados.get("avaliacoes", [])
 documentos = empresa_dados.get("documentos", [])
 
-# Identidades estruturadas (Atual vs Sugestão)
 identidade_atual_emp = empresa_dados.get("identidade_atual", empresa_dados.get("identidade", {}))
 identidade_sugestao_emp = empresa_dados.get("identidade_sugestao", {})
 swot_emp = empresa_dados.get("swot", {})
@@ -914,7 +910,7 @@ if menu_selecionado == "Visão Geral":
             )
             st.plotly_chart(fig_line, use_container_width=True)
 
-        # 3. IDENTIDADE ESTRATÉGICA CORPORATIVA COM ABAS (ATUAL VS SUGESTÃO)
+        # 3. IDENTIDADE ESTRATÉGICA CORPORATIVA COM SUB-ABAS (ATUAL VS PROPOSTA CONSULTIVA)
         st.markdown("<div style='margin-top: 35px;'></div>", unsafe_allow_html=True)
         st.markdown("""
             <div style="margin-bottom: 12px;">
@@ -923,22 +919,21 @@ if menu_selecionado == "Visão Geral":
             </div>
         """, unsafe_allow_html=True)
 
-        # Sub-abas para alternar entre o estado atual e a sugestão consultiva
-        subtab_atual, subtab_sugestao = st.tabs(["🏛️ Estado Atual da Empresa", "💡 Proposta Consultiva JE"])
+        subtab_atual, subtab_sugestao = st.tabs(["🏛️ Estado Atual da Empresa", "💡 Proposta Consultiva"])
 
         with subtab_atual:
             missao_atual_txt = identidade_atual_emp.get(
                 "missao", 
                 "Oferecer Conceito e Eficiência na Execução e Gestão de Projetos, Planejamento e Acompanhamento de Empreendimentos. Ser referência em entregas nos prazos estabelecidos e de acordo com melhores técnicas aplicáveis."
-            ).replace('\n', '<br>')
+            ).replace('\n', '<br>')[cite: 14]
             visao_atual_txt = identidade_atual_emp.get(
                 "visao", 
                 "Buscar garantir que o projeto tenha soluções inteligentes, viabilidade na execução e supere as expectativas do cliente."
-            ).replace('\n', '<br>')
+            ).replace('\n', '<br>')[cite: 14]
             valores_atual_txt = identidade_atual_emp.get(
                 "valores", 
                 "Ter compromisso de buscar soluções que tenham padrão de qualidade, sem esquecermos do melhor custo benefício. A arquitetura e a sustentabilidade se unem. Creditamos os valores considerados pelo cliente."
-            ).replace('\n', '<br>')
+            ).replace('\n', '<br>')[cite: 14]
 
             col_m1, col_v1, col_val1 = st.columns(3)
             with col_m1:
@@ -993,7 +988,7 @@ if menu_selecionado == "Visão Geral":
                 st.markdown(f"""
                     <div class="metric-card" style="min-height: 250px; border-top: 4px solid #F26419;">
                         <div style="font-size: 1.2rem; margin-bottom: 8px;">💡</div>
-                        <div style="font-weight: 800; font-size: 1.05rem; color: #0A192F; margin-bottom: 8px;">Proposta de Missão</div>
+                        <div style="font-weight: 800; font-size: 1.05rem; color: #0A192F; margin-bottom: 8px;">Proposta Consultiva</div>
                         <div style="font-size: 0.86rem; color: #1B263B; line-height: 1.6; font-weight: 500;">
                             {missao_sug_txt}
                         </div>
@@ -1004,7 +999,7 @@ if menu_selecionado == "Visão Geral":
                 st.markdown(f"""
                     <div class="metric-card" style="min-height: 250px; border-top: 4px solid #F26419;">
                         <div style="font-size: 1.2rem; margin-bottom: 8px;">🔭</div>
-                        <div style="font-weight: 800; font-size: 1.05rem; color: #0A192F; margin-bottom: 8px;">Proposta de Visão</div>
+                        <div style="font-weight: 800; font-size: 1.05rem; color: #0A192F; margin-bottom: 8px;">Proposta Consultiva</div>
                         <div style="font-size: 0.86rem; color: #1B263B; line-height: 1.6; font-weight: 500;">
                             {visao_sug_txt}
                         </div>
@@ -1015,7 +1010,7 @@ if menu_selecionado == "Visão Geral":
                 st.markdown(f"""
                     <div class="metric-card" style="min-height: 250px; border-top: 4px solid #F26419;">
                         <div style="font-size: 1.2rem; margin-bottom: 8px;">💎</div>
-                        <div style="font-weight: 800; font-size: 1.05rem; color: #0A192F; margin-bottom: 8px;">Proposta de Valores</div>
+                        <div style="font-weight: 800; font-size: 1.05rem; color: #0A192F; margin-bottom: 8px;">Proposta Consultiva</div>
                         <div style="font-size: 0.86rem; color: #1B263B; line-height: 1.6; font-weight: 500;">
                             {valores_sug_txt}
                         </div>
