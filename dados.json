@@ -32,6 +32,16 @@
         "fraquezas": "Em desenvolvimento",
         "oportunidades": "Em desenvolvimento",
         "ameacas": "Em desenvolvimento"
+      },
+      "identidade_atual": {
+        "missao": "Oferecer Conceito e Eficiência na Execução e Gestão de Projetos, Planejamento e Acompanhamento de Empreendimentos. Ser referência em entregas nos prazos estabelecidos e de acordo com melhores técnicas aplicáveis.",
+        "visao": "Buscar garantir que o projeto tenha soluções inteligentes, viabilidade na execução e supere as expectativas do cliente.",
+        "valores": "Ter compromisso de buscar soluções que tenham padrão de qualidade, sem esquecermos do melhor custo benefício. A arquitetura e a sustentabilidade se unem. Creditamos os valores considerados pelo cliente."
+      },
+      "identidade_sugestao": {
+        "missao": "Oferecer Conceito e Eficiência na Execução e Gestão de Projetos, Planejamento e Acompanhamento de Empreendimentos. Ser referência em entregas nos prazos estabelecidos e de acordo com melhores técnicas aplicáveis.",
+        "visao": "Ser reconhecido até 2029 entre os principais escritórios de arquitetura e gestão BIM capacitados a atender grandes contratantes institucionais, liderando o desenvolvimento de soluções de alta construtibilidade, sustentabilidade e integridade de dados para o ciclo de vida dos ativos.",
+        "valores": "1. Rigor Técnico e Viabilidade Construtiva\n2. Ecoeficiência, SMS e Ciclo de Vida\n3. Confiabilidade e Disciplina Contratual\n4. Colaboração Interdisciplinar e Transparência\n5. Governança e Integridade da Informação"
       }
     }
   }
