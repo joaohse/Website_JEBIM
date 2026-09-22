@@ -499,7 +499,7 @@ if st.session_state["tipo_usuario"] == "admin":
                         st.success("Avaliação gravada e sincronizada com sucesso!")
                         st.rerun()
 
-    # 3. Gerir Identidade Estratégica (Atual vs Proposta Consultiva) & Análise SWOT
+    # 3. Gerir Identidade Estratégica (Atual vs Estado Proposto) & Análise SWOT
     with tab_swot:
         st.subheader("Configurar Identidade Estratégica & Análise SWOT")
         empresas_opts = list(DADOS.get("empresas", {}).keys())
@@ -522,13 +522,13 @@ if st.session_state["tipo_usuario"] == "admin":
             padrao_sugestao_valores = id_sugestao.get("valores", "• Rigor Técnico: Modelação precisa e consistência da informação.\n• Colaboração Aberta: Integração transparente entre disciplinas e stakeholders.\n• Inovação Contínua: Adoção prática das melhores diretrizes e normas digitais.\n• Sustentabilidade: Redução mensurável de retrabalhos via coordenação virtual.")
 
             with st.form("form_identidade_swot"):
-                st.markdown("### 🏛️ Identidade Atual da Empresa (Como está hoje)")
+                st.markdown("### 🏛️ Estado Atual da Empresa (Como está hoje)")
                 txt_atual_missao = st.text_area("Missão Vigente", value=padrao_atual_missao, height=80)
                 txt_atual_visao = st.text_area("Visão Vigente", value=padrao_atual_visao, height=80)
                 txt_atual_valores = st.text_area("Valores Vigentes", value=padrao_atual_valores, height=90)
 
                 st.markdown("---")
-                st.markdown("### 💡 Proposta Consultiva")
+                st.markdown("### 💡 Estado Proposto")
                 txt_sug_missao = st.text_area("Proposta de Missão", value=padrao_sugestao_missao, height=80)
                 txt_sug_visao = st.text_area("Proposta de Visão", value=padrao_sugestao_visao, height=80)
                 txt_sug_valores = st.text_area("Proposta de Valores", value=padrao_sugestao_valores, height=100)
@@ -910,7 +910,7 @@ if menu_selecionado == "Visão Geral":
             )
             st.plotly_chart(fig_line, use_container_width=True)
 
-        # 3. IDENTIDADE ESTRATÉGICA CORPORATIVA COM SUB-ABAS (ATUAL VS PROPOSTA CONSULTIVA)
+        # 3. IDENTIDADE ESTRATÉGICA CORPORATIVA COM SUB-ABAS (ATUAL VS ESTADO PROPOSTO)
         st.markdown("<div style='margin-top: 35px;'></div>", unsafe_allow_html=True)
         st.markdown("""
             <div style="margin-bottom: 12px;">
@@ -919,7 +919,7 @@ if menu_selecionado == "Visão Geral":
             </div>
         """, unsafe_allow_html=True)
 
-        subtab_atual, subtab_sugestao = st.tabs(["🏛️ Estado Atual da Empresa", "💡 Proposta Consultiva"])
+        subtab_atual, subtab_sugestao = st.tabs(["🏛️ Estado Atual da Empresa", "💡 Estado Proposto"])
 
         with subtab_atual:
             missao_atual_txt = identidade_atual_emp.get(
@@ -940,7 +940,7 @@ if menu_selecionado == "Visão Geral":
                 st.markdown(f"""
                     <div class="metric-card" style="min-height: 250px; border-top: 4px solid #0A192F;">
                         <div style="font-size: 1.2rem; margin-bottom: 8px;">🎯</div>
-                        <div style="font-weight: 800; font-size: 1.05rem; color: #0A192F; margin-bottom: 8px;">Missão Vigente</div>
+                        <div style="font-weight: 800; font-size: 1.05rem; color: #0A192F; margin-bottom: 8px;">Missão</div>
                         <div style="font-size: 0.86rem; color: #1B263B; line-height: 1.6; font-weight: 500;">
                             {missao_atual_txt}
                         </div>
@@ -951,7 +951,7 @@ if menu_selecionado == "Visão Geral":
                 st.markdown(f"""
                     <div class="metric-card" style="min-height: 250px; border-top: 4px solid #0A192F;">
                         <div style="font-size: 1.2rem; margin-bottom: 8px;">🔭</div>
-                        <div style="font-weight: 800; font-size: 1.05rem; color: #0A192F; margin-bottom: 8px;">Visão Vigente</div>
+                        <div style="font-weight: 800; font-size: 1.05rem; color: #0A192F; margin-bottom: 8px;">Visão</div>
                         <div style="font-size: 0.86rem; color: #1B263B; line-height: 1.6; font-weight: 500;">
                             {visao_atual_txt}
                         </div>
@@ -962,7 +962,7 @@ if menu_selecionado == "Visão Geral":
                 st.markdown(f"""
                     <div class="metric-card" style="min-height: 250px; border-top: 4px solid #0A192F;">
                         <div style="font-size: 1.2rem; margin-bottom: 8px;">💎</div>
-                        <div style="font-weight: 800; font-size: 1.05rem; color: #0A192F; margin-bottom: 8px;">Valores Vigentes</div>
+                        <div style="font-weight: 800; font-size: 1.05rem; color: #0A192F; margin-bottom: 8px;">Valores</div>
                         <div style="font-size: 0.86rem; color: #1B263B; line-height: 1.6; font-weight: 500;">
                             {valores_atual_txt}
                         </div>
@@ -988,7 +988,7 @@ if menu_selecionado == "Visão Geral":
                 st.markdown(f"""
                     <div class="metric-card" style="min-height: 250px; border-top: 4px solid #F26419;">
                         <div style="font-size: 1.2rem; margin-bottom: 8px;">💡</div>
-                        <div style="font-weight: 800; font-size: 1.05rem; color: #0A192F; margin-bottom: 8px;">Proposta Consultiva</div>
+                        <div style="font-weight: 800; font-size: 1.05rem; color: #0A192F; margin-bottom: 8px;">Missão</div>
                         <div style="font-size: 0.86rem; color: #1B263B; line-height: 1.6; font-weight: 500;">
                             {missao_sug_txt}
                         </div>
@@ -999,7 +999,7 @@ if menu_selecionado == "Visão Geral":
                 st.markdown(f"""
                     <div class="metric-card" style="min-height: 250px; border-top: 4px solid #F26419;">
                         <div style="font-size: 1.2rem; margin-bottom: 8px;">🔭</div>
-                        <div style="font-weight: 800; font-size: 1.05rem; color: #0A192F; margin-bottom: 8px;">Proposta Consultiva</div>
+                        <div style="font-weight: 800; font-size: 1.05rem; color: #0A192F; margin-bottom: 8px;">Visão</div>
                         <div style="font-size: 0.86rem; color: #1B263B; line-height: 1.6; font-weight: 500;">
                             {visao_sug_txt}
                         </div>
@@ -1010,7 +1010,7 @@ if menu_selecionado == "Visão Geral":
                 st.markdown(f"""
                     <div class="metric-card" style="min-height: 250px; border-top: 4px solid #F26419;">
                         <div style="font-size: 1.2rem; margin-bottom: 8px;">💎</div>
-                        <div style="font-weight: 800; font-size: 1.05rem; color: #0A192F; margin-bottom: 8px;">Proposta Consultiva</div>
+                        <div style="font-weight: 800; font-size: 1.05rem; color: #0A192F; margin-bottom: 8px;">Valores</div>
                         <div style="font-size: 0.86rem; color: #1B263B; line-height: 1.6; font-weight: 500;">
                             {valores_sug_txt}
                         </div>
