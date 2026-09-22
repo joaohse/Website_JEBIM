@@ -513,9 +513,9 @@ if st.session_state["tipo_usuario"] == "admin":
             id_sugestao = dados_emp_atual.get("identidade_sugestao", {})
             swot_atual = dados_emp_atual.get("swot", {})
             
-            padrao_atual_missao = id_atual.get("missao", "Oferecer Conceito e Eficiência na Execução e Gestão de Projetos, Planejamento e Acompanhamento de Empreendimentos. Ser referência em entregas nos prazos estabelecidos e de acordo com melhores técnicas aplicáveis.")[cite: 14]
-            padrao_atual_visao = id_atual.get("visao", "Buscar garantir que o projeto tenha soluções inteligentes, viabilidade na execução e supere as expectativas do cliente.")[cite: 14]
-            padrao_atual_valores = id_atual.get("valores", "Ter compromisso de buscar soluções que tenham padrão de qualidade, sem esquecermos do melhor custo benefício. A arquitetura e a sustentabilidade se unem. Creditamos os valores considerados pelo cliente.")[cite: 14]
+            padrao_atual_missao = id_atual.get("missao", "Oferecer Conceito e Eficiência na Execução e Gestão de Projetos, Planejamento e Acompanhamento de Empreendimentos. Ser referência em entregas nos prazos estabelecidos e de acordo com melhores técnicas aplicáveis.")
+            padrao_atual_visao = id_atual.get("visao", "Buscar garantir que o projeto tenha soluções inteligentes, viabilidade na execução e supere as expectativas do cliente.")
+            padrao_atual_valores = id_atual.get("valores", "Ter compromisso de buscar soluções que tenham padrão de qualidade, sem esquecermos do melhor custo benefício. A arquitetura e a sustentabilidade se unem. Creditamos os valores considerados pelo cliente.")
 
             padrao_sugestao_missao = id_sugestao.get("missao", "Desenvolver projetos integrados e gestão técnica com excelência orientada à metodologia BIM, transformando necessidades espaciais e operacionais em soluções arquitetónicas eficientes, sustentáveis e de alta previsibilidade construtiva.")
             padrao_sugestao_visao = id_sugestao.get("visao", "Consolidar-se como referência em maturidade digital e processos BIM integrados (ISO 19650), antecipando decisões executivas, otimizando custos e garantindo entregáveis de alto desempenho.")
@@ -925,15 +925,15 @@ if menu_selecionado == "Visão Geral":
             missao_atual_txt = identidade_atual_emp.get(
                 "missao", 
                 "Oferecer Conceito e Eficiência na Execução e Gestão de Projetos, Planejamento e Acompanhamento de Empreendimentos. Ser referência em entregas nos prazos estabelecidos e de acordo com melhores técnicas aplicáveis."
-            ).replace('\n', '<br>')[cite: 14]
+            ).replace('\n', '<br>')
             visao_atual_txt = identidade_atual_emp.get(
                 "visao", 
                 "Buscar garantir que o projeto tenha soluções inteligentes, viabilidade na execução e supere as expectativas do cliente."
-            ).replace('\n', '<br>')[cite: 14]
+            ).replace('\n', '<br>')
             valores_atual_txt = identidade_atual_emp.get(
                 "valores", 
                 "Ter compromisso de buscar soluções que tenham padrão de qualidade, sem esquecermos do melhor custo benefício. A arquitetura e a sustentabilidade se unem. Creditamos os valores considerados pelo cliente."
-            ).replace('\n', '<br>')[cite: 14]
+            ).replace('\n', '<br>')
 
             col_m1, col_v1, col_val1 = st.columns(3)
             with col_m1:
